@@ -8,6 +8,7 @@ import {
 } from "react-router";
 
 import type { Route } from "./+types/root";
+import Drawer from "~/components/Drawer";
 import "./app.css";
 
 export const links: Route.LinksFunction = () => [
@@ -42,7 +43,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <Outlet />;
+  return <div className="flex items-start">
+    <Drawer />
+    <div className="p-4">
+      <Outlet />
+    </div>
+  </div>
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
