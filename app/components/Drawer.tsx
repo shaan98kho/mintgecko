@@ -16,13 +16,13 @@ export default function Drawer() {
         <div className="pl-4 pt-2 pb-4 text-sm cursor-default">Overview</div>
         <div className="flex flex-col gap-4 font-medium w-full">
             <NavBtn caption={<><BiSolidDashboard />Dashboard</>} href="/"/>
-            <NavBtn caption={<><LuChartLine />Market</>} href="market"/>
-            <NavBtn caption={<><FaWallet />Portfolio</>} href="portfolio"/>
-            <NavBtn caption={<><IoNewspaper />News</>} href="news"/>
-            <NavBtn caption={<><RiExchangeFill />Exchange</>} href="exchange"/>
+            <NavBtn caption={<><LuChartLine />Market</>} href="/market"/>
+            <NavBtn caption={<><FaWallet />Portfolio</>} href="/portfolio"/>
+            <NavBtn caption={<><IoNewspaper />News</>} href="/news"/>
+            <NavBtn caption={<><RiExchangeFill />Exchange</>} href="/exchange"/>
         </div>
         <div className="flex flex-col gap-4 mt-auto mb-8 w-full">
-            <NavBtn caption={<><IoIosSettings/>Settings</>} href="settings"/>
+            <NavBtn caption={<><IoIosSettings/>Settings</>} href="/settings"/>
         </div>
     </div>
 }

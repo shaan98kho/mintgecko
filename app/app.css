@@ -1,4 +1,21 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Roboto+Flex:opsz,wght@8..144,100..1000&family=VT323&display=swap");
 @import "tailwindcss";
+
+:root {
+  --primary: #d3fbd8;
+  --secondary: #3492fa;
+  --tertiary: #f6f9ff;
+  --accent: #030712;
+  --black: #333;
+  --lightBlack: #1A1A1A;
+  --darkBlack: #121212;
+  --darkGray: #666;
+  --mediumGray: #ccc;
+  --lightGray: #f7f7f7;
+  --borderGray: #e0e0e0;
+  --backgroundGray: #ecebeb;
+  --white: #ffffff;
+}
 
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
@@ -12,4 +29,34 @@ body {
   @media (prefers-color-scheme: dark) {
     color-scheme: dark;
   }
+}
+
+.logo {
+  font-family: "VT323";
+  color: var(--primary);
+  text-shadow: 4px 0 var(--secondary);
+}
+
+.drawer {
+  position: relative;
+}
+
+.drawer::before {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--primary);
+  opacity: 0.1;
+}
+
+.nav-btn {
+  transition: all ease-in-out 0.1s;
+}
+
+.nav-btn.active, .nav-btn:hover {
+  background: var(--secondary);
+  color: var(--primary);
 }
