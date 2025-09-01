@@ -11,6 +11,9 @@ import type { Route } from "./+types/root";
 import Drawer from "~/components/Drawer";
 import "./app.css";
 
+import { Provider } from "react-redux";
+import { store } from "./state/store";
+
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
   {
@@ -43,12 +46,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
-  return <div className="flex items-start">
-    <Drawer />
-    <div className="p-4">
-      <Outlet />
+  return <Provider store={store}>
+    <div className="flex items-start">
+      <Drawer />
+      <div className="p-4">
+        <Outlet />
+      </div>
     </div>
-  </div>
+  </Provider>
 }
 
 export function ErrorBoundary({ error }: Route.ErrorBoundaryProps) {
