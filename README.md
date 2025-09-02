@@ -1,87 +1,91 @@
-# Welcome to React Router!
+# Mintgecko 🧊🦎💹
 
-A modern, production-ready template for building full-stack React applications using React Router.
+A **crypto dashboard** built with React, Redux Toolkit, and the [CoinGecko API](https://www.coingecko.com/en/api).  
+Mintgecko lets you explore real-time market data, track coins, view detailed charts, and manage a personalized watchlist.
 
-[![Open in StackBlitz](https://developer.stackblitz.com/img/open_in_stackblitz.svg)](https://stackblitz.com/github/remix-run/react-router-templates/tree/main/default)
-
-## Features
-
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
-- 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
-
-## Getting Started
-
-### Installation
-
-Install the dependencies:
-
-```bash
-npm install
-```
-
-### Development
-
-Start the development server with HMR:
-
-```bash
-npm run dev
-```
-
-Your application will be available at `http://localhost:5173`.
-
-## Building for Production
-
-Create a production build:
-
-```bash
-npm run build
-```
-
-## Deployment
-
-### Docker Deployment
-
-To build and run using Docker:
-
-```bash
-docker build -t my-app .
-
-# Run the container
-docker run -p 3000:3000 my-app
-```
-
-The containerized application can be deployed to any platform that supports Docker, including:
-
-- AWS ECS
-- Google Cloud Run
-- Azure Container Apps
-- Digital Ocean App Platform
-- Fly.io
-- Railway
-
-### DIY Deployment
-
-If you're familiar with deploying Node applications, the built-in app server is production-ready.
-
-Make sure to deploy the output of `npm run build`
-
-```
-├── package.json
-├── package-lock.json (or pnpm-lock.yaml, or bun.lockb)
-├── build/
-│   ├── client/    # Static assets
-│   └── server/    # Server-side code
-```
-
-## Styling
-
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+!! Mintgecko is still a work in progress !!
 
 ---
 
-Built with ❤️ using React Router.
+## 🚀 Features
+
+- 🔎 **Market Overview** – Browse top cryptocurrencies with live prices, market cap, and volume.  
+- 📊 **Coin Detail Pages** – Price, supply, and interactive historical charts (7/30/90 days).  
+- ⭐ **Watchlist** – Add/remove favorite coins, persisted to localStorage.  
+- 💱 **Currency Toggle** – Switch between USD and MYR (expandable to other currencies).  
+- 🧭 **Sorting & Pagination** – Order by market cap, 24h %, or volume, with paginated results.  
+- ⚡ **State Management** – Built with Redux Toolkit slices & async thunks.  
+- ✅ **Error Handling** – Graceful loading states, error messages, and retry logic.
+
+---
+
+## 🛠️ Tech Stack
+
+- [React](https://react.dev/) (Vite)  
+- [Redux Toolkit](https://redux-toolkit.js.org/)  
+- [TypeScript](https://www.typescriptlang.org/)  
+- [Tailwind CSS](https://tailwindcss.com/)  
+- [CoinGecko REST API](https://www.coingecko.com/en/api)  
+
+---
+
+## 📂 Project Structure
+
+to be refined:
+
+```
+src/
+app/
+components/
+state/
+store.ts
+
+```
+
+---
+
+## ⚙️ Installation & Setup
+
+1. **Clone the repo**
+   ``
+   git clone https://github.com/yourusername/mintgecko.git
+   cd mintgecko
+``
+
+2. **Install dependencies**
+``npm install``
+
+3. **Create environment file**
+`` # .env.local
+VITE_COINGECKO_API_KEY=your_api_key_here``
+
+4. **Run the app**
+`` npm run dev``
+
+5. **Build for production**
+   `` npm run build
+   npm run preview``
+
+---
+
+## 🧑‍💻 Roadmap
+
+- Add user authentication (JWT/NextAuth)
+
+- Deploy demo on Vercel
+
+- Dark mode toggle
+
+- Infinite scroll for markets
+
+- Real-time updates via WebSocket
+
+---
+
+## 🙌 Acknowledgements
+
+- CoinGecko API
+ for market data
+
+- Redux Toolkit
+ for powering state management
