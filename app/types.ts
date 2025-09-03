@@ -25,6 +25,7 @@ export interface Coin {
     atl_date: Date,
     roi: string,
     last_updated: Date,
+    sparkline_in_7d?: { price: number[]}
 }
 
 export interface CoinsState {

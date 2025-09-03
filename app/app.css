@@ -2,19 +2,23 @@
 @import "tailwindcss";
 
 :root {
+  /* theme */
   --primary: #d3fbd8;
   --secondary: #3492fa;
   --tertiary: #f6f9ff;
   --accent: #030712;
-  --black: #333;
-  --lightBlack: #1A1A1A;
-  --darkBlack: #121212;
-  --darkGray: #666;
-  --mediumGray: #ccc;
-  --lightGray: #f7f7f7;
-  --borderGray: #e0e0e0;
-  --backgroundGray: #ecebeb;
-  --white: #ffffff;
+
+  --test: #10b981;
+  --test: #0ea5e9;
+
+  /* utilities */
+  /* text colors */
+  --color-text-primary: #d1d5db;   /* gray-300, main body text */
+  --color-text-heading: #f3f4f6;   /* gray-100, headings */
+  --color-text-secondary: #9ca3af; /* gray-400, muted labels */
+  --color-text-tertiary: #6b7280;  /* gray-500, very subtle */
+  --color-accent: #dbeafe;         /* blue-100 */
+
 }
 
 @theme {
@@ -31,14 +35,26 @@ body {
   }
 }
 
+body {
+  color: var(--color-text-primary);
+}
+
 .logo {
   font-family: "VT323";
   color: var(--primary);
   text-shadow: 4px 0 var(--secondary);
 }
 
-.drawer {
+.container {
   position: relative;
+  width: calc(100% - 240px);
+  left: 240px;
+}
+
+.drawer {
+  position: fixed;
+  width: 240px;
+  background: var(--accent);
 }
 
 .drawer::before {
@@ -59,4 +75,18 @@ body {
 .nav-btn.active, .nav-btn:hover {
   background: var(--secondary);
   color: var(--primary);
+}
+
+.coin-card {
+  background-color: rgba(52, 146, 250, 0.02);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+.no-scrollbar {
+  scrollbar-width: none; /* Firefox */
+  -ms-overflow-style: none; /* IE and old Edge */
 }

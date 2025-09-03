@@ -1,23 +1,11 @@
-import { useEffect } from "react"
-import { useAppDispatch, useAppSelector } from "~/state/hooks"
-import { fetchCoins } from "~/features/coins/coinsSlice"
+import FeaturedCoinsList from "~/components/FeaturedCoinsList"
 
 export default function Home() {
-	const dispatch = useAppDispatch()
-	const coins = useAppSelector(s => s.coins.items)
-	const status = useAppSelector(s => s.coins.status);
 	
-	useEffect(() => {
-		dispatch(fetchCoins())
-	}, [dispatch])
-
-	if(!coins) return <>Error fetching</>
-
-	console.log(coins)
 	return <div>
-		{/* {coins?.map(coin => (<div key={coin.id}>
-			{coin.name}
-		</div>))} */}
-		this is Home
-	</div>;
+		<h2 className="text-lg">Featured</h2>
+		<div className="">
+			<FeaturedCoinsList />
+		</div>
+	</div>
 }
