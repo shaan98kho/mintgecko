@@ -3,26 +3,41 @@ import {
     createAsyncThunk,
     type PayloadAction
 } from "@reduxjs/toolkit"
-import type { CoinsState, Coin } from "~/types"
+import { createAppAsyncThunk } from "~/state/typedAsyncThunk"
+import type { Coin } from "~/types"
+
+export interface CoinsState {
+    items: Coin[],
+    status: 'idle' | 'loading' | 'succeeded' | 'failed',
+    error?: string,
+    lastFetched: number | null
+}
 
 // headers, api key and urls
 const API_KEY = import.meta.env.VITE_COINGECKO_API_KEY as string
 const BASE_URL = 'https://api.coingecko.com/api/v3'
-// const options = {
-//     method: 'GET',
-//     headers: {
-//         accept: 'application/json',
-//         'x-cg-demo-api-key': API_KEY
-//     }
-// }
-// CORS issues, dont use options
+const options = {
+    method: 'GET',
+    headers: {
+        accept: 'application/json',
+        'x-cg-demo-api-key': API_KEY
+    }
+}
+const STALE_TIME_MS = 60_000
+
 
 // initial state
-const initialState: CoinsState = { items: [], status: 'idle' }
+const initialState: CoinsState = { 
+    items: [],
+    status: 'idle',
+    lastFetched: null
+}
 
 // thunk
-// not yet tested
-export const fetchCoins = createAsyncThunk<Coin[]>(
+export const fetchCoins = createAppAsyncThunk<
+    Coin[],
+    void
+>(
     'coins/fetchCoins',
     async (_, {signal}) => {
         const params = new URLSearchParams({
@@ -44,6 +59,14 @@ export const fetchCoins = createAsyncThunk<Coin[]>(
             const msg = e instanceof Error ? e.message : String(e)
             throw new Error('fetch failed:', e)
         }
+    }, {
+        condition: (_, { getState }) => {
+            const {lastFetched, status} = getState().coins
+
+            if(status === 'loading') return false
+            if(lastFetched && Date.now() - lastFetched < STALE_TIME_MS) return false
+            return true
+        }
     }
 )
 
@@ -64,6 +87,7 @@ const coinsSlice = createSlice({
         .addCase(fetchCoins.fulfilled, (s, a) => { 
             s.status = 'succeeded'
             s.items = a.payload
+            s.lastFetched = Date.now()
         })
         .addCase(fetchCoins.rejected, (s, a) => { 
             s.status = 'failed'

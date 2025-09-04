@@ -86,7 +86,7 @@ export default function CoinCard({
       <path
         d={line}
         fill="none"
-        stroke={up ? "#d3fbd85a" : "#059669"} // orange/green like your mock
+        stroke="#d3fbd85a"
         strokeWidth="0.5"
         filter="url(#soft)"
       />

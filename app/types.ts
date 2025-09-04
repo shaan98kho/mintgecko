@@ -28,10 +28,4 @@ export interface Coin {
     sparkline_in_7d?: { price: number[]}
 }
 
-export interface CoinsState {
-    items: Coin[];
-    status: 'idle' | 'loading' | 'succeeded' | 'failed';
-    error?: string;
-}
-
 // export interface CoinsMarket
