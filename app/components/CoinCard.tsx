@@ -47,7 +47,7 @@ export default function CoinCard({
 }: CoinCardProps) {
     const up = (price_change_percentage_24h ?? 0) >= 0
     const prices = sparkline_in_7d?.price ?? []
-    console.log(current_price.toFixed(2), current_price.toLocaleString())
+    // console.log(current_price.toFixed(2), current_price.toLocaleString())
 
     const line = toPath(prices)
     const area =

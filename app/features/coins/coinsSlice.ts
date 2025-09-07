@@ -22,7 +22,7 @@ const options = {
         'x-cg-demo-api-key': API_KEY
     }
 }
-const STALE_TIME_MS = 60_000
+const STALE_TIME_MS = 60_000 // 1 min
 
 
 // initial state
@@ -50,13 +50,15 @@ export const fetchCoins = createAppAsyncThunk<
         })
         try {
             const res = await fetch(`${BASE_URL}/coins/markets?${params}`, {signal})
+
             if(!res.ok) throw new Error('res not ok, try again')
+
             const data = await res.json()
             return data as Coin[]
         }
         catch(e: any) {
             const msg = e instanceof Error ? e.message : String(e)
-            throw new Error('fetch failed:', e)
+            throw new Error(`fetch failed: ${msg}`)
         }
     }, {
         condition: (_, { getState }) => {
