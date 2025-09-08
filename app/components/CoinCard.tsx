@@ -95,7 +95,7 @@ export default function CoinCard({
 
     <div className="flex items-center justify-between">
       <div className="text-2xl font-semibold text-[#f6f9ff]">
-        ${current_price.toLocaleString()}
+        ${current_price.toLocaleString()} USD
       </div>
       <div
         className={`text-sm font-medium ${
