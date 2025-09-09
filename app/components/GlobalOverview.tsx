@@ -80,20 +80,8 @@ export default function GlobalOverView({fiat = "USD"}: GlobalOverviewProps) {
 
     const cards = [...scalarCards, ...currencyCards, ...dominanceCards]
 
-    // const globalEl = SCALAR_KEYS.map((k) => (
-    //     <StatCard key={k} title={LABELS[k]} value={globalData[k]} />
-    // ))
-
     return <div className="grid grid-cols-2 md:grid-cols-3 gap-3 p-4">
-        {/* <StatCard
-            title="Market Cap (USD)"
-            value={globalData.total_market_cap[CURRENCY]}
-            change={globalData.market_cap_change_percentage_24h_usd}
-        />
-        {globalEl} */}
-
-        {cards.map((c, idx) => {
-            if(idx == 6) console.log(c)
+        {cards.map((c) => {
             return <StatCard
                 key={c.title}
                 title={c.title}

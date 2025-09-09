@@ -16,7 +16,7 @@ export default function FeaturedCoinsList() {
 	if(!coins || status==='failed') return <>Error fetching, please try again</>
 
 
-    return <div className="featured flex gap-2 overflow-x-auto no-scrollbar p-4">
+    return <div className="featured flex gap-6 overflow-x-auto no-scrollbar px-4 pt-6 pb-9 min-w-0 w-full max-w-full">
             {coins?.slice(0, 5).map(coin => {
                 return <CoinCard 
                     key={`c${coin.id}`}
