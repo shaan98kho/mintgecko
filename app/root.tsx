@@ -49,7 +49,7 @@ export default function App() {
   return <Provider store={store}>
     <div className="flex items-start w-full">
       <Drawer />
-      <div className="min-h-screen relative w-[calc(100%-240px)] l-[240px]">
+      <div className="min-h-screen relative w-[calc(100%-240px)] left-[240px]">
         <Outlet />
       </div>
     </div>
