@@ -47,9 +47,9 @@ export function Layout({ children }: { children: React.ReactNode }) {
 
 export default function App() {
   return <Provider store={store}>
-    <div className="flex items-start w-screen">
+    <div className="flex items-start w-full">
       <Drawer />
-      <div className="flex-1 min-w-0 r-container ml-[240px] min-h-screen">
+      <div className="min-h-screen relative w-[calc(100%-240px)] l-[240px]">
         <Outlet />
       </div>
     </div>

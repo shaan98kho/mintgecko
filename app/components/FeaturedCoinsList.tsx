@@ -16,8 +16,9 @@ export default function FeaturedCoinsList() {
 	if(!coins || status==='failed') return <>Error fetching, please try again</>
 
 
-    return <div className="featured flex gap-6 overflow-x-auto no-scrollbar px-4 pt-6 pb-9 min-w-0 w-full max-w-full">
-            {coins?.slice(0, 5).map(coin => {
+    return <div className="featured flex gap-6 overflow-x-auto no-scrollbar">
+            {coins?.slice(0, 5).map((coin, idx) => {
+                if(idx === 1) console.log(coin.sparkline_in_7d)
                 return <CoinCard 
                     key={`c${coin.id}`}
                     id={coin.id}
@@ -27,7 +28,7 @@ export default function FeaturedCoinsList() {
                     current_price={coin.current_price}
                     price_change_percentage_24h={coin.price_change_percentage_24h}
                     sparkline_in_7d={coin.sparkline_in_7d}
-                    classes="flex-shrink-0"
+                    classes={`flex-shrink-0 mt-4 mb-6 ${idx === 0 ? "ml-8" : ""}`}
                 />
             })}            
     </div>

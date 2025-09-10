@@ -47,7 +47,6 @@ export default function CoinCard({
 }: CoinCardProps) {
     const up = (price_change_percentage_24h ?? 0) >= 0
     const prices = sparkline_in_7d?.price ?? []
-    // console.log(current_price.toFixed(2), current_price.toLocaleString())
 
     const line = toPath(prices)
     const area =
@@ -65,33 +64,36 @@ export default function CoinCard({
       </div>
     </div>
 
-    <svg width="100%" viewBox={`0 0 ${W} ${H}`} className="mb-4">
-      <defs>
-        <linearGradient id={`grad-${id}`} x1="0" y1="0" x2="0" y2="1">
-          {/* light at top, fade to transparent */}
-          <stop offset="0%" stopColor="#3492fa" stopOpacity="0.55" />
-          <stop offset="100%" stopColor="#030712" stopOpacity="0" />
-        </linearGradient>
-        <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
-          <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur" />
-          <feMerge>
-            <feMergeNode in="blur" />
-            <feMergeNode in="SourceGraphic" />
-          </feMerge>
-        </filter>
-      </defs>
+    {prices.length === 0 
+      ? <div className=""><span>Not enough data</span></div> 
+      : <svg width="100%" viewBox={`0 0 ${W} ${H}`} className="mb-4">
+        <defs>
+          <linearGradient id={`grad-${id}`} x1="0" y1="0" x2="0" y2="1">
+            {/* light at top, fade to transparent */}
+            <stop offset="0%" stopColor="#3492fa" stopOpacity="0.55" />
+            <stop offset="100%" stopColor="#030712" stopOpacity="0" />
+          </linearGradient>
+          <filter id="soft" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur in="SourceAlpha" stdDeviation="2" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
 
-      {/* area fill */}
-      <path d={area} fill={`url(#grad-${id})`} />
-      {/* line */}
-      <path
-        d={line}
-        fill="none"
-        stroke="#d3fbd85a"
-        strokeWidth="0.5"
-        filter="url(#soft)"
-      />
-    </svg>
+        {/* area fill */}
+        <path d={area} fill={`url(#grad-${id})`} />
+        {/* line */}
+        <path
+          d={line}
+          fill="none"
+          stroke="#d3fbd85a"
+          strokeWidth="0.5"
+          filter="url(#soft)"
+        />
+      </svg>
+    }
 
     <div className="flex items-center justify-between">
       <div className="text-2xl font-semibold text-[#f6f9ff]">

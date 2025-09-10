@@ -80,7 +80,7 @@ export default function GlobalOverView({fiat = "USD"}: GlobalOverviewProps) {
 
     const cards = [...scalarCards, ...currencyCards, ...dominanceCards]
 
-    return <div className="grid grid-cols-2 md:grid-cols-3 gap-3 p-4">
+    return <div className="grid grid-cols-2 md:grid-cols-3 gap-3 ">
         {cards.map((c) => {
             return <StatCard
                 key={c.title}
