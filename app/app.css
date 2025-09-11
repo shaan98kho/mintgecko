@@ -111,3 +111,22 @@ body {
   scrollbar-width: none; /* Firefox */
   -ms-overflow-style: none; /* IE and old Edge */
 }
+
+.row {
+  position: relative;
+
+  > div {
+    width: calc(100% / 6);
+  }
+}
+
+.row::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 1px;
+  background: var(--primary);
+
+}
