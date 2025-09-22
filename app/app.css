@@ -112,15 +112,25 @@ body {
   -ms-overflow-style: none; /* IE and old Edge */
 }
 
+.market-table {
+
+}
+
 .row {
   position: relative;
+  color: var(--color-text-primary);
+  border-bottom: 1px solid rgba(211, 251, 216, .25);
 
   > div {
     width: calc(100% / 6);
   }
 }
 
-.row::after {
+.row.header {
+  color: var(--color-text-heading);
+}
+
+/* .row::after {
   content: "";
   position: absolute;
   left: 0;
@@ -128,5 +138,17 @@ body {
   bottom: 0;
   height: 1px;
   background: var(--primary);
+  opacity: 0.25;
+} */
 
+@media only screen and (max-width: 911px) {
+  .market-table {
+    overflow-x: scroll;
+  }
+
+  .row {
+    > div {
+      flex-shrink: 0;
+    }
+  }
 }

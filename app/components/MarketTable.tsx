@@ -12,8 +12,24 @@ export default function MarketTable() {
 		dispatch(fetchCoins())
 	}, [dispatch])
 
+    console.log(coins)
+    const tableBody = coins.map((coin) => (
+        <TableRow 
+            id={coin.id}
+            name={coin.name}
+            symbol={coin.symbol}
+            image={coin.image}
+            current_price={coin.current_price}
+            price_change_percentage_24h={coin.price_change_percentage_24h}
+            sparkline_in_7d={coin.sparkline_in_7d}
+            high_24h={coin.high_24h}
+            low_24h={coin.low_24h}
+            classes=""
+            // chart={<Sparkline data={c.sparkline_in_7d.price} />}
+        />
+    ))
 
-    return <div className="p-4">
+    return <div className="market-table p-4">
         {/* header */}
         <TableRow
             {...{
@@ -27,7 +43,7 @@ export default function MarketTable() {
         />
 
         {/* body */}
-
+        {tableBody}
 
     </div>
 }

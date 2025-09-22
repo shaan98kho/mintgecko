@@ -18,8 +18,8 @@ type TableBody = Pick<Coin,
                     "low_24h"
                 >
                 & {
-                    chart: ReactNode,
-                    classes: string
+                    chart?: ReactNode,
+                    classes?: string
                 }
 
 type TableContentProps = TableHeader | TableBody
@@ -32,15 +32,15 @@ export default function TableRow(props: TableContentProps) {
           current_price, price_change_percentage_24h,
           sparkline_in_7d, high_24h, low_24h,
           chart, classes
-        } = props;
+        } = props
     
         return (
-            <div className={`row ${classes}`}>
+            <div className={`row flex items-center gap-4 py-2 ${classes}`}>
                 <div>{name}</div>
                 <div>{current_price}</div>
                 <div>{price_change_percentage_24h}</div>
                 <div>{high_24h} / {low_24h}</div>
-                <div>sparkline</div>
+                <div>sparkline to be added</div>
                 <div>cap</div>
             
 
@@ -50,7 +50,7 @@ export default function TableRow(props: TableContentProps) {
     
     // header
     return (
-    <div className="row header flex items-center gap-4">
+    <div className="row header flex items-center gap-4 py-2 font-bold">
         <div>{props.name}</div>
         <div>{props.price}</div>
         <div>{props["24h change"]}</div>
