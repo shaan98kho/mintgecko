@@ -14,7 +14,8 @@ export default function MarketTable() {
 
     console.log(coins)
     const tableBody = coins.map((coin) => (
-        <TableRow 
+        <TableRow
+            key={`mk${coin.id}`}
             id={coin.id}
             name={coin.name}
             symbol={coin.symbol}

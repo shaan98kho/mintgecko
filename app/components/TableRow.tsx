@@ -1,6 +1,7 @@
 import type { ReactNode } from "react"
 import type { Coin } from "~/types"
 import { FaSortDown, FaSortUp } from "react-icons/fa6"
+import Sparkline from "./Sparkline"
 
 type TableHeaderTitle = "name" | "price" | "24h change" | "24 high / 24h low" | "charts" | "market cap"
 
@@ -33,6 +34,9 @@ export default function TableRow(props: TableContentProps) {
           sparkline_in_7d, high_24h, low_24h,
           chart, classes
         } = props
+
+        const prices = sparkline_in_7d?.price ?? []
+        const up = (price_change_percentage_24h ?? 0) >= 0
     
         return (
             <div className={`row flex items-center gap-4 py-2 ${classes}`}>
@@ -40,7 +44,12 @@ export default function TableRow(props: TableContentProps) {
                 <div>{current_price}</div>
                 <div>{price_change_percentage_24h}</div>
                 <div>{high_24h} / {low_24h}</div>
-                <div>sparkline to be added</div>
+                <div>
+                    <Sparkline 
+                        values={prices}
+                        gradientTop={up ? '#059669' : '#D81B60'}
+                    />
+                </div>
                 <div>cap</div>
             
 
