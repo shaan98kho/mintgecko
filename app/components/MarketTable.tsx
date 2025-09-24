@@ -25,6 +25,7 @@ export default function MarketTable() {
             sparkline_in_7d={coin.sparkline_in_7d}
             high_24h={coin.high_24h}
             low_24h={coin.low_24h}
+            market_cap={coin.market_cap}
             classes=""
             // chart={<Sparkline data={c.sparkline_in_7d.price} />}
         />
@@ -34,6 +35,7 @@ export default function MarketTable() {
         {/* header */}
         <TableRow
             {...{
+                market_cap_rank: "Rank",
                 name: "Name",
                 price: "Price",
                 "24h change": "24h",

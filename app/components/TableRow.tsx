@@ -16,9 +16,11 @@ type TableBody = Pick<Coin,
                     "price_change_percentage_24h" |
                     "sparkline_in_7d" |
                     "high_24h" |
-                    "low_24h"
+                    "low_24h" |
+                    "market_cap"
                 >
                 & {
+                    market_cap_rank?: number,
                     chart?: ReactNode,
                     classes?: string
                 }
@@ -31,15 +33,21 @@ export default function TableRow(props: TableContentProps) {
         const {
           id, name, symbol, image,
           current_price, price_change_percentage_24h,
-          sparkline_in_7d, high_24h, low_24h,
+          sparkline_in_7d, high_24h, low_24h, market_cap,
           chart, classes
         } = props
+
+        const compact = new Intl.NumberFormat('en-US', {
+            notation: 'compact',
+            maximumFractionDigits: 2,
+          }).format(market_cap)
 
         const prices = sparkline_in_7d?.price ?? []
         const up = (price_change_percentage_24h ?? 0) >= 0
     
         return (
             <div className={`row flex items-center gap-4 py-2 ${classes}`}>
+                {/* <div className="w-[5%] text-center">{market_cap_rank}</div> */}
                 <div>{name}</div>
                 <div>{current_price}</div>
                 <div>{price_change_percentage_24h}</div>
@@ -50,7 +58,7 @@ export default function TableRow(props: TableContentProps) {
                         gradientTop={up ? '#059669' : '#D81B60'}
                     />
                 </div>
-                <div>cap</div>
+                <div>{compact}</div>
             
 
             </div>
@@ -60,6 +68,7 @@ export default function TableRow(props: TableContentProps) {
     // header
     return (
     <div className="row header flex items-center gap-4 py-2 font-bold">
+        {/* <div className="w-[5%] text-center">{props.market_cap_rank}</div> */}
         <div>{props.name}</div>
         <div>{props.price}</div>
         <div>{props["24h change"]}</div>

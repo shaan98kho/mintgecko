@@ -39,7 +39,6 @@ export default function CoinCard({
 
       <Sparkline
         values={prices}
-        // keep your original look
         width={260}
         height={90}
         pad={0}
