@@ -60,7 +60,7 @@ body {
 .drawer::before {
   content: "";
   position: fixed;
-  left: 240px;
+  left: 237px;
   top: 0;
   bottom: 0;
   width: 2px;
