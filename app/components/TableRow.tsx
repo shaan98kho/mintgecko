@@ -69,12 +69,30 @@ export default function TableRow(props: TableContentProps) {
     return (
     <div className="row header flex items-center gap-4 py-2 font-bold">
         {/* <div className="w-[5%] text-center">{props.market_cap_rank}</div> */}
-        <div>{props.name}</div>
-        <div>{props.price}</div>
-        <div>{props["24h change"]}</div>
-        <div>{props["24 high / 24h low"]}</div>
-        <div>{props.charts}</div>
-        <div>{props["market cap"]}</div>
+        <div className="flex gap-2 items-center">
+            <span>{props.name}</span>
+            <div className="sort-wrap flex flex-col justify-center items-center"><FaSortUp /><FaSortDown/></div>
+        </div>
+        <div className="flex gap-2 items-center">
+            <span>{props.price}</span>
+            <div className="sort-wrap flex flex-col justify-center items-center"><FaSortUp /><FaSortDown/></div>
+        </div>
+        <div className="flex gap-2 items-center">
+            <span>{props["24h change"]}</span>
+            <div className="sort-wrap flex flex-col justify-center items-center"><FaSortUp /><FaSortDown/></div>
+        </div>
+        <div className="flex gap-2 items-center">
+            <span>{props["24 high / 24h low"]}</span>
+            <div className="sort-wrap flex flex-col justify-center items-center"><FaSortUp /><FaSortDown/></div>
+        </div>
+        <div className="flex gap-2 items-center">
+            <span>{props.charts}</span>
+            <div className="sort-wrap flex flex-col justify-center items-center"><FaSortUp /><FaSortDown/></div>
+        </div>
+        <div className="flex gap-2 items-center">
+            <span>{props["market cap"]}</span>
+            <div className="sort-wrap flex flex-col justify-center items-center"><FaSortUp /><FaSortDown/></div>
+        </div>
     </div>
     )
 }

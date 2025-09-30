@@ -109,8 +109,24 @@ body {
   -ms-overflow-style: none; /* IE and old Edge */
 }
 
-.market-table {
+.sort-wrap {
+  svg {
+    position: relative;
+    color: var(--primary);
+    opacity: 0.25;
+  }
 
+  svg:hover {
+    color: var(--secondary);
+    opacity: 1;
+  }
+
+  > svg:first-child {
+    bottom: -6px;  
+  }
+  > svg:last-child {
+    top: -6px;
+  }
 }
 
 .row {
