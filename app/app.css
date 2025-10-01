@@ -114,6 +114,7 @@ body {
     position: relative;
     color: var(--primary);
     opacity: 0.25;
+    transition: all ease-in-out 0.2s;
   }
 
   svg:hover {

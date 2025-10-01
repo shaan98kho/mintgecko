@@ -11,6 +11,7 @@ export interface CoinsState {
     error?: string,
     lastFetched: number | null
 }
+type Order = 'market_cap_desc'|'market_cap_asc'|'volume_desc'|'volume_asc'|'id_asc'|'id_desc'
 
 // headers, api key and urls
 const API_KEY = import.meta.env.VITE_COINGECKO_API_KEY as string
@@ -35,21 +36,23 @@ const initialState: CoinsState = {
 // thunk
 export const fetchCoins = createAppAsyncThunk<
     Coin[],
-    void
+    {order?: Order; page?: number; per_page?: number} | void
 >(
     'coins/fetchCoins',
-    async (_, {signal}) => {
-        const params = new URLSearchParams({
+    async (args, {signal}) => {
+        const params = { order: 'market_cap_desc', page: 1, per_page: 100, ...(args ?? {}) }
+
+        const queries = new URLSearchParams({
             vs_currency: 'usd',
-            order: 'market_cap_desc',
-            per_page: '100',
-            page: '1',
+            order: params.order,
+            per_page: String(params.per_page),
+            page: String(params.page),
             sparkline: 'true',
             price_change_percentage: '24h',
             x_cg_demo_api_key: import.meta.env.VITE_COINGECKO_API_KEY!,
         })
         try {
-            const res = await fetch(`${BASE_URL}/coins/markets?${params}`, {signal})
+            const res = await fetch(`${BASE_URL}/coins/markets?${queries}`, {signal})
 
             if(!res.ok) throw new Error('res not ok, try again')
 
