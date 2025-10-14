@@ -1,19 +1,40 @@
-import { useEffect } from "react"
+import { useEffect, useRef } from "react"
 import { useAppDispatch, useAppSelector } from "~/state/hooks"
 import { fetchCoins } from "~/features/coins/coinsSlice"
 import TableRow from "./TableRow"
 
 export default function MarketTable() {
     const dispatch = useAppDispatch()
-	const coins = useAppSelector(s => s.coins.items)
-	const status = useAppSelector(s => s.coins.status)
+    const {items, hasMore, status} = useAppSelector(s => s.coins)
+	
+    const perPage = 100
+    const currentPage = Math.max(1, Math.ceil(items.length / perPage))
 
 	useEffect(() => {
-		dispatch(fetchCoins())
-	}, [dispatch])
+        if(status === 'idle' && items.length === 0) {
+            dispatch(fetchCoins({page: 1}))
+        }
+	}, [status, items.length, dispatch])
 
-    console.log(coins)
-    const tableBody = coins.map((coin) => (
+    const sentinelRef = useRef<HTMLDivElement | null>(null)
+
+    useEffect(() => {
+        const el = sentinelRef.current
+        if(!el) return
+        
+        const obs = new IntersectionObserver(entries => {
+            const first = entries[0]
+            if(first.isIntersecting && hasMore && status !== 'loading') {
+                dispatch(fetchCoins({page: currentPage + 1}))
+            }
+        }, {rootMargin: '200px 0px'}) // pre-load before hitting the end
+
+        obs.observe(el)
+        return () => obs.disconnect()
+
+    }, [dispatch, hasMore, status, currentPage])
+
+    const tableBody = items.map((coin) => (
         <TableRow
             key={`mk${coin.id}`}
             id={coin.id}
@@ -31,7 +52,7 @@ export default function MarketTable() {
         />
     ))
 
-    return <div className="market-table p-4">
+    return <div className="market-table p-4" ref={sentinelRef}>
         {/* header */}
         <TableRow
             {...{

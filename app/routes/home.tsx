@@ -10,7 +10,7 @@ export default function Home() {
 			<FeaturedCoinsList />
 		</div>
 		<h3 className="text-lg px-8 py-4">Global Market</h3>
-		<div className="px-8 py-4">
+		<div className="px-8 pt-4 pb-6">
 			<GlobalOverView />
 		</div>
 	</div>

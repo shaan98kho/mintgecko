@@ -9,7 +9,9 @@ export interface CoinsState {
     items: Coin[],
     status: 'idle' | 'loading' | 'succeeded' | 'failed',
     error?: string,
-    lastFetched: number | null
+    lastFetched: number | null,
+    hasMore: boolean,
+    loadingPageMap: Record<number, true>
 }
 type Order = 'market_cap_desc'|'market_cap_asc'|'volume_desc'|'volume_asc'|'id_asc'|'id_desc'
 
@@ -30,7 +32,9 @@ const STALE_TIME_MS = 60_000 // 1 min
 const initialState: CoinsState = { 
     items: [],
     status: 'idle',
-    lastFetched: null
+    lastFetched: null,
+    hasMore: true,
+    loadingPageMap: {}
 }
 
 // thunk
@@ -40,7 +44,7 @@ export const fetchCoins = createAppAsyncThunk<
 >(
     'coins/fetchCoins',
     async (args, {signal}) => {
-        const params = { order: 'market_cap_desc', page: 1, per_page: 100, ...(args ?? {}) }
+        const params = { order: 'market_cap_desc' as Order, page: 1, per_page: 100, ...(args ?? {}) }
 
         const queries = new URLSearchParams({
             vs_currency: 'usd',
@@ -64,11 +68,14 @@ export const fetchCoins = createAppAsyncThunk<
             throw new Error(`fetch failed: ${msg}`)
         }
     }, {
-        condition: (_, { getState }) => {
+        condition: (args, { getState }) => {
+            const p = { order: 'market_cap_desc' as Order, page: 1, per_page: 100, ...(args ?? {}) };
             const {lastFetched, status} = getState().coins
 
             if(status === 'loading') return false
-            if(lastFetched && Date.now() - lastFetched < STALE_TIME_MS) return false
+            if(lastFetched && Date.now() - lastFetched < STALE_TIME_MS) {
+                if (p.page === 1) return false;
+            }
             return true
         }
     }
@@ -84,18 +91,35 @@ const coinsSlice = createSlice({
           },
     },
     extraReducers: (b) => {
-        b.addCase(fetchCoins.pending, (s) => {
+        b.addCase(fetchCoins.pending, (s, a) => {
             s.status = 'loading'
-            s.error = undefined 
+            s.error = undefined
+            const { page = 1 } = (a.meta.arg ?? {}) as { page?: number };
+            s.loadingPageMap[page] = true;            // add
         })
         .addCase(fetchCoins.fulfilled, (s, a) => { 
             s.status = 'succeeded'
             s.items = a.payload
             s.lastFetched = Date.now()
+            const { page = 1, per_page = 100 } =
+      (a.meta.arg ?? {}) as { page?: number; per_page?: number }
+            s.hasMore = a.payload.length === per_page
+
+            delete s.loadingPageMap[page]
         })
         .addCase(fetchCoins.rejected, (s, a) => { 
+            const { page = 1 } = (a.meta.arg ?? {}) as { page?: number }
+
+            // If the thunk was canceled by `condition`, don't mark as failed
+            // @ts-ignore meta.condition exists at runtime
+            if (a.meta?.condition) {
+                delete s.loadingPageMap[page]
+                return
+            }
+
             s.status = 'failed'
             s.error = a.error.message
+            delete s.loadingPageMap[page]
         })
     },
 })
