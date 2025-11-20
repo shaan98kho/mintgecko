@@ -99,10 +99,25 @@ const coinsSlice = createSlice({
         })
         .addCase(fetchCoins.fulfilled, (s, a) => { 
             s.status = 'succeeded'
-            s.items = a.payload
+            // s.items = a.payload
+            // s.lastFetched = Date.now()
+            // const { page = 1, per_page = 100 } =
+            // (a.meta.arg ?? {}) as { page?: number; per_page?: number }
+            //         s.hasMore = a.payload.length === per_page
+
+            //         delete s.loadingPageMap[page]
+            const { page = 1, per_page = 100 } = (a.meta.arg ?? {}) as { page?: number; per_page?: number }
+
+            if (page === 1) {
+                // Initial load or refresh
+                s.items = a.payload
+            } else {
+                // Infinite scrolling - append
+                s.items = [...s.items, ...a.payload]
+            }
+
             s.lastFetched = Date.now()
-            const { page = 1, per_page = 100 } =
-      (a.meta.arg ?? {}) as { page?: number; per_page?: number }
+
             s.hasMore = a.payload.length === per_page
 
             delete s.loadingPageMap[page]

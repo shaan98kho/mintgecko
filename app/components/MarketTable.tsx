@@ -52,7 +52,7 @@ export default function MarketTable() {
         />
     ))
 
-    return <div className="market-table p-4" ref={sentinelRef}>
+    return <div className="market-table p-4">
         {/* header */}
         <TableRow
             {...{
@@ -68,6 +68,9 @@ export default function MarketTable() {
 
         {/* body */}
         {tableBody}
+
+        {/* sentinel */}
+        <div ref={sentinelRef} style={{height:1}}></div>
 
     </div>
 }
