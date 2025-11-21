@@ -5,15 +5,16 @@ import {
 import { createAppAsyncThunk } from "~/state/typedAsyncThunk"
 import type { Coin } from "~/types"
 
+type Order = 'market_cap_desc'|'market_cap_asc'|'volume_desc'|'volume_asc'|'id_asc'|'id_desc'
 export interface CoinsState {
     items: Coin[],
     status: 'idle' | 'loading' | 'succeeded' | 'failed',
     error?: string,
     lastFetched: number | null,
     hasMore: boolean,
+    order: Order,
     loadingPageMap: Record<number, true>
 }
-type Order = 'market_cap_desc'|'market_cap_asc'|'volume_desc'|'volume_asc'|'id_asc'|'id_desc'
 
 // headers, api key and urls
 const API_KEY = import.meta.env.VITE_COINGECKO_API_KEY as string
@@ -34,7 +35,8 @@ const initialState: CoinsState = {
     status: 'idle',
     lastFetched: null,
     hasMore: true,
-    loadingPageMap: {}
+    loadingPageMap: {},
+    order: 'market_cap_desc',
 }
 
 // thunk
@@ -44,7 +46,7 @@ export const fetchCoins = createAppAsyncThunk<
 >(
     'coins/fetchCoins',
     async (args, {signal}) => {
-        const params = { order: 'market_cap_desc' as Order, page: 1, per_page: 100, ...(args ?? {}) }
+        const params = { order: 'market_cap_desc' as Order, page: 1, per_page: 25, ...(args ?? {}) }
 
         const queries = new URLSearchParams({
             vs_currency: 'usd',
@@ -69,7 +71,7 @@ export const fetchCoins = createAppAsyncThunk<
         }
     }, {
         condition: (args, { getState }) => {
-            const p = { order: 'market_cap_desc' as Order, page: 1, per_page: 100, ...(args ?? {}) };
+            const p = { order: 'market_cap_desc' as Order, page: 1, per_page: 25, ...(args ?? {}) };
             const {lastFetched, status} = getState().coins
 
             if(status === 'loading') return false
@@ -87,8 +89,15 @@ const coinsSlice = createSlice({
     initialState,
     reducers: {
         setCoins(state, action: PayloadAction<Coin[]>) {
-            state.items = action.payload;
-          },
+            state.items = action.payload
+        },
+        //optional
+        sortOrders(state, action: PayloadAction<Order>) {
+            state.order = action.payload
+            state.items = []
+            state.hasMore = true
+            state.lastFetched = null
+        },
     },
     extraReducers: (b) => {
         b.addCase(fetchCoins.pending, (s, a) => {
@@ -106,7 +115,7 @@ const coinsSlice = createSlice({
             //         s.hasMore = a.payload.length === per_page
 
             //         delete s.loadingPageMap[page]
-            const { page = 1, per_page = 100 } = (a.meta.arg ?? {}) as { page?: number; per_page?: number }
+            const { page = 1, per_page = 25 } = (a.meta.arg ?? {}) as { page?: number; per_page?: number }
 
             if (page === 1) {
                 // Initial load or refresh

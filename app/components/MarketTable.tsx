@@ -1,15 +1,34 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useAppDispatch, useAppSelector } from "~/state/hooks"
 import { fetchCoins } from "~/features/coins/coinsSlice"
 import TableRow from "./TableRow"
 
+type SortKey =
+                | 'market_cap_rank'
+                | 'name'
+                | 'current_price'
+                | 'price_change_percentage_24h'
+                | 'high_24h'
+                | 'low_24h'
+                | 'market_cap'
+
+type SortDirection = 'asc' | 'desc'
+
+type SortConfig = {
+    key: SortKey
+    direction: SortDirection
+}
+
 export default function MarketTable() {
+    const [sortConfig, setSortConfig] = useState<SortConfig>({
+        key: 'market_cap_rank',
+        direction: 'asc'
+    })
     const dispatch = useAppDispatch()
     const {items, hasMore, status} = useAppSelector(s => s.coins)
-	
-    const perPage = 100
-    const currentPage = Math.max(1, Math.ceil(items.length / perPage))
 
+    const perPage = 25
+    const currentPage = Math.max(1, Math.ceil(items.length / perPage))
 	useEffect(() => {
         if(status === 'idle' && items.length === 0) {
             dispatch(fetchCoins({page: 1}))
@@ -17,7 +36,6 @@ export default function MarketTable() {
 	}, [status, items.length, dispatch])
 
     const sentinelRef = useRef<HTMLDivElement | null>(null)
-
     useEffect(() => {
         const el = sentinelRef.current
         if(!el) return
@@ -33,6 +51,17 @@ export default function MarketTable() {
         return () => obs.disconnect()
 
     }, [dispatch, hasMore, status, currentPage])
+
+    const handleSort = (key:SortKey) => {
+        setSortConfig(prev => {
+            if (prev.key === key) {
+                return { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' }
+            }
+
+            //default
+            return { key, direction: key === 'name' ? 'asc' : 'desc' }
+        })
+    }
 
     const tableBody = items.map((coin) => (
         <TableRow
