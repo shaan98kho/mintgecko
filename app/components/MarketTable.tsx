@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 import { useAppDispatch, useAppSelector } from "~/state/hooks"
 import { fetchCoins } from "~/features/coins/coinsSlice"
 import TableRow from "./TableRow"
@@ -35,6 +35,7 @@ export default function MarketTable() {
         }
 	}, [status, items.length, dispatch])
 
+    // infinite scroll to load coins
     const sentinelRef = useRef<HTMLDivElement | null>(null)
     useEffect(() => {
         const el = sentinelRef.current
@@ -62,6 +63,41 @@ export default function MarketTable() {
             return { key, direction: key === 'name' ? 'asc' : 'desc' }
         })
     }
+
+    const sortedItems = useMemo(() => {
+        if (!items.length) return items
+
+        const { key, direction } = sortConfig
+        const dir = direction === 'asc' ? 1 : -1
+
+        const copy = [...items]
+
+        copy.sort((a, b) => {
+            const va = a[key]
+            const vb = b[key]
+
+            // Handle undefined/null safely
+            if (va == null && vb == null) return 0
+            if (va == null) return 1
+            if (vb == null) return -1
+
+            // String compare for `name`, numeric for others
+            if (key === 'name') {
+            return String(va).localeCompare(String(vb)) * dir
+            }
+
+            const na = Number(va)
+            const nb = Number(vb)
+
+            if (na < nb) return -1 * dir
+            if (na > nb) return 1 * dir
+            return 0
+        })
+
+        return copy
+        
+    }, [items, sortConfig])
+    
 
     const tableBody = items.map((coin) => (
         <TableRow
