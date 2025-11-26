@@ -5,7 +5,20 @@ import Sparkline from "./Sparkline"
 
 type TableHeaderTitle = "name" | "price" | "24h change" | "24 high / 24h low" | "charts" | "market cap"
 
-type TableHeader = Record<TableHeaderTitle, string>
+type SortableHeaderTitle = Exclude<TableHeaderTitle, "charts">
+
+type SortDirection = 'asc' | 'desc'
+
+type TableHeaderBase = Record<TableHeaderTitle, string>
+
+type TableHeaderProps = TableHeaderBase & {
+    sortKey?: SortableHeaderTitle | null
+    sortDirection?: SortDirection
+    onSort?: (key: SortableHeaderTitle) => void
+  }
+
+// type TableHeader = Record<TableHeaderTitle, string>
+
 
 type TableBody = Pick<Coin,
                     "id" |
@@ -25,16 +38,24 @@ type TableBody = Pick<Coin,
                     classes?: string
                 }
 
-type TableContentProps = TableHeader | TableBody
+type TableContentProps = TableHeaderProps | TableBody
 
 export default function TableRow(props: TableContentProps) {
     // body
     if ("id" in props) {
         const {
-          id, name, symbol, image,
-          current_price, price_change_percentage_24h,
-          sparkline_in_7d, high_24h, low_24h, market_cap,
-          chart, classes
+          id,
+          name,
+          symbol,
+          image,
+          current_price,
+          price_change_percentage_24h,
+          sparkline_in_7d, 
+          high_24h, 
+          low_24h,
+          market_cap,
+          chart, 
+          classes,
         } = props
 
         const compact = new Intl.NumberFormat('en-US', {
@@ -66,32 +87,72 @@ export default function TableRow(props: TableContentProps) {
     }
     
     // header
+    const { sortKey, sortDirection = "asc", onSort } = props
+
+    const renderSortButton = (col: SortableHeaderTitle) => {
+        if (!onSort) return (
+            <div className="sort-wrap flex flex-col justify-center items-center">
+                <FaSortUp className="opacity-30" />
+                <FaSortDown className="opacity-30" />
+            </div>
+        )
+
+        const isActive = sortKey === col
+
+        return (
+            <button
+                type="button"
+                onClick={() => onSort(col)}
+                className="sort-wrap flex flex-col justify-center items-center"
+            >
+                <FaSortUp
+                    className={
+                    "transition-opacity " +
+                    (isActive && sortDirection === "asc" ? "opacity-100" : "opacity-30")}
+                />
+                <FaSortDown
+                    className={
+                    "transition-opacity " +
+                    (isActive && sortDirection === "desc"
+                    ? "opacity-100"
+                    : "opacity-30")}
+                />
+            </button>
+        )
+    }
     return (
     <div className="row header flex items-center gap-4 py-2 font-bold">
         {/* <div className="w-[5%] text-center">{props.market_cap_rank}</div> */}
         <div className="flex gap-2 items-center">
             <span>{props.name}</span>
-            <div className="sort-wrap flex flex-col justify-center items-center"><FaSortUp /><FaSortDown/></div>
+            {/* <div className="sort-wrap flex flex-col justify-center items-center"><FaSortUp /><FaSortDown/></div> */}
+            {renderSortButton("name")}
+
         </div>
         <div className="flex gap-2 items-center">
             <span>{props.price}</span>
-            <div className="sort-wrap flex flex-col justify-center items-center"><FaSortUp /><FaSortDown/></div>
+            {/* <div className="sort-wrap flex flex-col justify-center items-center"><FaSortUp /><FaSortDown/></div> */}
+            {renderSortButton("price")}
         </div>
         <div className="flex gap-2 items-center">
             <span>{props["24h change"]}</span>
-            <div className="sort-wrap flex flex-col justify-center items-center"><FaSortUp /><FaSortDown/></div>
+            {/* <div className="sort-wrap flex flex-col justify-center items-center"><FaSortUp /><FaSortDown/></div> */}
+            {renderSortButton("24h change")}
         </div>
         <div className="flex gap-2 items-center">
             <span>{props["24 high / 24h low"]}</span>
-            <div className="sort-wrap flex flex-col justify-center items-center"><FaSortUp /><FaSortDown/></div>
+            {/* <div className="sort-wrap flex flex-col justify-center items-center"><FaSortUp /><FaSortDown/></div> */}
+            {renderSortButton("24 high / 24h low")}
         </div>
         <div className="flex gap-2 items-center">
             <span>{props.charts}</span>
-            <div className="sort-wrap flex flex-col justify-center items-center"><FaSortUp /><FaSortDown/></div>
+            {/* <div className="sort-wrap flex flex-col justify-center items-center"><FaSortUp /><FaSortDown/></div> */}
+            {/* {renderSortButton("name")} */}
         </div>
         <div className="flex gap-2 items-center">
             <span>{props["market cap"]}</span>
-            <div className="sort-wrap flex flex-col justify-center items-center"><FaSortUp /><FaSortDown/></div>
+            {/* <div className="sort-wrap flex flex-col justify-center items-center"><FaSortUp /><FaSortDown/></div> */}
+            {renderSortButton("market cap")}
         </div>
     </div>
     )

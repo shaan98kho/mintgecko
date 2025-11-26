@@ -3,14 +3,21 @@ import { useAppDispatch, useAppSelector } from "~/state/hooks"
 import { fetchCoins } from "~/features/coins/coinsSlice"
 import TableRow from "./TableRow"
 
+// type SortKey =
+//                 | 'market_cap_rank'
+//                 | 'name'
+//                 | 'current_price'
+//                 | 'price_change_percentage_24h'
+//                 | 'high_24h'
+//                 | 'low_24h'
+//                 | 'market_cap'
+
 type SortKey =
-                | 'market_cap_rank'
-                | 'name'
-                | 'current_price'
-                | 'price_change_percentage_24h'
-                | 'high_24h'
-                | 'low_24h'
-                | 'market_cap'
+  | 'name'
+  | 'price'
+  | '24h change'
+  | '24 high / 24h low'
+  | 'market cap'
 
 type SortDirection = 'asc' | 'desc'
 
@@ -21,8 +28,8 @@ type SortConfig = {
 
 export default function MarketTable() {
     const [sortConfig, setSortConfig] = useState<SortConfig>({
-        key: 'market_cap_rank',
-        direction: 'asc'
+        key: 'market cap',
+        direction: 'desc'
     })
     const dispatch = useAppDispatch()
     const {items, hasMore, status} = useAppSelector(s => s.coins)
@@ -66,40 +73,55 @@ export default function MarketTable() {
 
     const sortedItems = useMemo(() => {
         if (!items.length) return items
-
+      
         const { key, direction } = sortConfig
         const dir = direction === 'asc' ? 1 : -1
-
+      
         const copy = [...items]
-
+      
         copy.sort((a, b) => {
-            const va = a[key]
-            const vb = b[key]
-
-            // Handle undefined/null safely
-            if (va == null && vb == null) return 0
-            if (va == null) return 1
-            if (vb == null) return -1
-
-            // String compare for `name`, numeric for others
-            if (key === 'name') {
-            return String(va).localeCompare(String(vb)) * dir
+          // Map header key -> actual coin field value
+          const getValue = (coin: (typeof items)[number]) => {
+            switch (key) {
+              case 'name':
+                return coin.name
+              case 'price':
+                return coin.current_price
+              case '24h change':
+                return coin.price_change_percentage_24h ?? 0
+              case '24 high / 24h low':
+                // you can choose high_24h or some custom logic
+                return coin.high_24h ?? 0
+              case 'market cap':
+                return coin.market_cap ?? 0
+              default:
+                return 0
             }
-
-            const na = Number(va)
-            const nb = Number(vb)
-
-            if (na < nb) return -1 * dir
-            if (na > nb) return 1 * dir
-            return 0
+          }
+      
+          const va = getValue(a)
+          const vb = getValue(b)
+      
+          // Name: string compare
+          if (key === 'name') {
+            return String(va).localeCompare(String(vb)) * dir
+          }
+      
+          // Others: numeric compare
+          const na = Number(va)
+          const nb = Number(vb)
+      
+          if (na < nb) return -1 * dir
+          if (na > nb) return 1 * dir
+          return 0
         })
-
+      
         return copy
-        
-    }, [items, sortConfig])
+      }, [items, sortConfig])
+      
     
 
-    const tableBody = items.map((coin) => (
+    const tableBody = sortedItems.map((coin) => (
         <TableRow
             key={`mk${coin.id}`}
             id={coin.id}
@@ -119,7 +141,7 @@ export default function MarketTable() {
 
     return <div className="market-table p-4">
         {/* header */}
-        <TableRow
+        {/* <TableRow
             {...{
                 market_cap_rank: "Rank",
                 name: "Name",
@@ -129,6 +151,19 @@ export default function MarketTable() {
                 charts: "7d",
                 "market cap": "Mkt Cap",
             }}
+        /> */}
+        <TableRow
+        name="Name"
+        price="Price"
+        {...{
+            "24h change": "24h",
+            "24 high / 24h low": "24h High / Low",
+            charts: "7d",
+            "market cap": "Mkt Cap",
+        }}
+        sortKey={sortConfig.key}
+        sortDirection={sortConfig.direction}
+        onSort={handleSort}
         />
 
         {/* body */}
