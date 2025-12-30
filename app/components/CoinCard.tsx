@@ -32,8 +32,8 @@ export default function CoinCard({
       <div className="flex items-center gap-3 mb-3">
         <img src={image} alt="" className="w-8 h-8" />
         <div>
-          <div className="font-semibold text-gray-100">{name}</div>
-          <div className="text-xs uppercase text-gray-500">{symbol}</div>
+          <div className="name font-semibold text-gray-100">{name}</div>
+          <div className="symbol text-xs uppercase text-gray-500">{symbol}</div>
         </div>
       </div>
 

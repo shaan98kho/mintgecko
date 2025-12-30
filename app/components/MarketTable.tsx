@@ -3,15 +3,6 @@ import { useAppDispatch, useAppSelector } from "~/state/hooks"
 import { fetchCoins } from "~/features/coins/coinsSlice"
 import TableRow from "./TableRow"
 
-// type SortKey =
-//                 | 'market_cap_rank'
-//                 | 'name'
-//                 | 'current_price'
-//                 | 'price_change_percentage_24h'
-//                 | 'high_24h'
-//                 | 'low_24h'
-//                 | 'market_cap'
-
 type SortKey =
   | 'name'
   | 'price'
@@ -90,7 +81,6 @@ export default function MarketTable() {
               case '24h change':
                 return coin.price_change_percentage_24h ?? 0
               case '24 high / 24h low':
-                // you can choose high_24h or some custom logic
                 return coin.high_24h ?? 0
               case 'market cap':
                 return coin.market_cap ?? 0
@@ -140,18 +130,6 @@ export default function MarketTable() {
     ))
 
     return <div className="market-table p-4">
-        {/* header */}
-        {/* <TableRow
-            {...{
-                market_cap_rank: "Rank",
-                name: "Name",
-                price: "Price",
-                "24h change": "24h",
-                "24 high / 24h low": "24h High / Low",
-                charts: "7d",
-                "market cap": "Mkt Cap",
-            }}
-        /> */}
         <TableRow
         name="Name"
         price="Price"

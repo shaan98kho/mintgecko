@@ -39,6 +39,8 @@ body {
   font-family: "VT323";
   color: var(--primary);
   text-shadow: 4px 0 var(--secondary);
+  height: 88px;
+  min-width: 189px;
 }
 /* 
 .container {
@@ -84,6 +86,16 @@ body {
   background: var(--accent);
   /* background-color: rgba(52, 146, 250, 0.02); */
   /* box-shadow: 0 10px 30px 0px rgba(52, 146, 250, 0.05); */
+}
+
+.coin-card {
+  .symbol {
+    color: var(--secondary);
+  }
+}
+
+.stats-card {
+  min-width: 100%;
 }
 
 .coin-card::after,

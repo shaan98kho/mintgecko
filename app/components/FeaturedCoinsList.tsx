@@ -7,7 +7,7 @@ export default function FeaturedCoinsList() {
     const dispatch = useAppDispatch()
 	const coins = useAppSelector(s => s.coins.items)
 	const status = useAppSelector(s => s.coins.status)
-	//
+	
 	useEffect(() => {
 		dispatch(fetchCoins())
 	}, [dispatch])
