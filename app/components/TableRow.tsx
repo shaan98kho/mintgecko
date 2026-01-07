@@ -7,7 +7,7 @@ type TableHeaderTitle = "name" | "price" | "24h change" | "24 high / 24h low" | 
 
 type SortableHeaderTitle = Exclude<TableHeaderTitle, "charts">
 
-type SortDirection = 'asc' | 'desc'
+type SortDirection = 'asc' | 'desc' | 'default'
 
 type TableHeaderBase = Record<TableHeaderTitle, string>
 
@@ -15,9 +15,7 @@ type TableHeaderProps = TableHeaderBase & {
     sortKey?: SortableHeaderTitle | null
     sortDirection?: SortDirection
     onSort?: (key: SortableHeaderTitle) => void
-  }
-
-// type TableHeader = Record<TableHeaderTitle, string>
+}
 
 
 type TableBody = Pick<Coin,

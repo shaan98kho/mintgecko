@@ -18,7 +18,7 @@ export default function FeaturedCoinsList() {
 
     return <div className="featured flex gap-6 overflow-x-auto no-scrollbar">
             {coins?.slice(0, 5).map((coin, idx) => {
-                if(idx === 1) console.log(coin.sparkline_in_7d)
+                // if(idx === 1)
                 return <CoinCard 
                     key={`c${coin.id}`}
                     id={coin.id}

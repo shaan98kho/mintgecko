@@ -10,7 +10,7 @@ type SortKey =
   | '24 high / 24h low'
   | 'market cap'
 
-type SortDirection = 'asc' | 'desc'
+type SortDirection = 'asc' | 'desc' | 'default'
 
 type SortConfig = {
     key: SortKey
@@ -20,18 +20,18 @@ type SortConfig = {
 export default function MarketTable() {
     const [sortConfig, setSortConfig] = useState<SortConfig>({
         key: 'market cap',
-        direction: 'desc'
+        direction: 'default'
     })
     const dispatch = useAppDispatch()
     const {items, hasMore, status} = useAppSelector(s => s.coins)
 
     const perPage = 25
     const currentPage = Math.max(1, Math.ceil(items.length / perPage))
-	useEffect(() => {
-        if(status === 'idle' && items.length === 0) {
-            dispatch(fetchCoins({page: 1}))
-        }
-	}, [status, items.length, dispatch])
+    useEffect(() => {
+          if(status === 'idle' && items.length === 0) {
+              dispatch(fetchCoins({page: 1}))
+          }
+    }, [status, items.length, dispatch])
 
     // infinite scroll to load coins
     const sentinelRef = useRef<HTMLDivElement | null>(null)
@@ -51,15 +51,29 @@ export default function MarketTable() {
 
     }, [dispatch, hasMore, status, currentPage])
 
+    const nextDir = (prev: SortDirection): SortDirection => {
+      if (prev === "default") return "desc";
+      if (prev === "desc") return "asc";
+      return "default";
+    }
+
     const handleSort = (key:SortKey) => {
         setSortConfig(prev => {
-            if (prev.key === key) {
-                return { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' }
+            // if (prev.key === key && prev.direction === direction) {
+            //     return { key, direction: 'default' }
+            // }
+            if(prev.key === key) {
+              return { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' } 
             }
 
             //default
             return { key, direction: key === 'name' ? 'asc' : 'desc' }
         })
+
+        // setSortConfig(prev => {
+        //   if (prev.key !== key) return { key, direction: "desc" }; // new key starts at desc
+        //   return { key, direction: nextDir(prev.direction) }
+        // })
     }
 
     const sortedItems = useMemo(() => {
@@ -69,6 +83,8 @@ export default function MarketTable() {
         const dir = direction === 'asc' ? 1 : -1
       
         const copy = [...items]
+
+        if(direction === 'default') return copy
       
         copy.sort((a, b) => {
           // Map header key -> actual coin field value
