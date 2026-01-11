@@ -14,7 +14,7 @@ type TableHeaderBase = Record<TableHeaderTitle, string>
 type TableHeaderProps = TableHeaderBase & {
     sortKey?: SortableHeaderTitle | null
     sortDirection?: SortDirection
-    onSort?: (key: SortableHeaderTitle) => void
+    onSort?: (key: SortableHeaderTitle, activeDir: Exclude<SortDirection, 'default'>) => void
 }
 
 
@@ -98,24 +98,32 @@ export default function TableRow(props: TableContentProps) {
         const isActive = sortKey === col
 
         return (
-            <button
-                type="button"
-                onClick={() => onSort(col)}
-                className="sort-wrap flex flex-col justify-center items-center"
-            >
-                <FaSortUp
-                    className={
-                    "transition-opacity " +
-                    (isActive && sortDirection === "asc" ? "opacity-100" : "opacity-30")}
-                />
-                <FaSortDown
-                    className={
-                    "transition-opacity " +
-                    (isActive && sortDirection === "desc"
-                    ? "opacity-100"
-                    : "opacity-30")}
-                />
-            </button>
+            <div className="sort-wrap flex flex-col justify-center items-center">
+                <button
+                    type="button"
+                    onClick={() => onSort(col, 'asc')}
+                >
+                    <FaSortUp
+                        className={
+                        "transition-opacity " +
+                        (isActive && sortDirection === "asc" 
+                            ? "opacity-100 active" 
+                            : "opacity-30")}
+                    />
+                </button>
+                <button
+                    type="button"
+                    onClick={() => onSort(col, 'desc')}
+                >
+                    <FaSortDown
+                        className={
+                        "transition-opacity " +
+                        (isActive && sortDirection === "desc"
+                            ? "opacity-100 active"
+                            : "opacity-30")}
+                    />
+                </button>
+            </div>
         )
     }
     return (

@@ -13,13 +13,13 @@ type SortKey =
 type SortDirection = 'asc' | 'desc' | 'default'
 
 type SortConfig = {
-    key: SortKey
+    key: SortKey | null
     direction: SortDirection
 }
 
 export default function MarketTable() {
     const [sortConfig, setSortConfig] = useState<SortConfig>({
-        key: 'market cap',
+        key: null,
         direction: 'default'
     })
     const dispatch = useAppDispatch()
@@ -51,29 +51,14 @@ export default function MarketTable() {
 
     }, [dispatch, hasMore, status, currentPage])
 
-    const nextDir = (prev: SortDirection): SortDirection => {
-      if (prev === "default") return "desc";
-      if (prev === "desc") return "asc";
-      return "default";
-    }
+    const handleSort = (key: SortKey , activeDir: Exclude<SortDirection,'default'>) => {
+        setSortConfig((prev) => {
+          if(prev.key === key && prev.direction === activeDir) {
+            return {key: null, direction: 'default'}
+          }
 
-    const handleSort = (key:SortKey) => {
-        setSortConfig(prev => {
-            // if (prev.key === key && prev.direction === direction) {
-            //     return { key, direction: 'default' }
-            // }
-            if(prev.key === key) {
-              return { key, direction: prev.direction === 'asc' ? 'desc' : 'asc' } 
-            }
-
-            //default
-            return { key, direction: key === 'name' ? 'asc' : 'desc' }
+          return {key, direction: activeDir}
         })
-
-        // setSortConfig(prev => {
-        //   if (prev.key !== key) return { key, direction: "desc" }; // new key starts at desc
-        //   return { key, direction: nextDir(prev.direction) }
-        // })
     }
 
     const sortedItems = useMemo(() => {

@@ -129,7 +129,8 @@ body {
     transition: all ease-in-out 0.2s;
   }
 
-  svg:hover {
+  svg:hover,
+  svg.active {
     color: var(--secondary);
     opacity: 1;
   }
