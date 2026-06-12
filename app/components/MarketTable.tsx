@@ -75,8 +75,8 @@ export default function MarketTable() {
           // Map header key -> actual coin field value
           const getValue = (coin: (typeof items)[number]) => {
             switch (key) {
-              case 'name':
-                return coin.name
+              case 'name': 
+                return coin.name 
               case 'price':
                 return coin.current_price
               case '24h change':

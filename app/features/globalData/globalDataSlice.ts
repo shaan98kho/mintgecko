@@ -33,12 +33,8 @@ export const fetchGlobalData = createAppAsyncThunk<
     async () => {
         try {
             const res = await fetch(`${URL}`, options)
-
             if(!res.ok) throw new Error('res not ok, try again')
-
             const data = await res.json()
-
-            // console.log(data)
             return data.data as GlobalData
         }
         catch(e: any) {
