@@ -4,6 +4,7 @@ A **crypto dashboard** built with React, Redux Toolkit, and the [CoinGecko API](
 Mintgecko lets you explore real-time market data, track coins, view detailed charts, and manage a personalized watchlist.
 
 !! Mintgecko is still a work in progress !!
+mobile UI coming soon 🥺 i hope
 
 ---
 
