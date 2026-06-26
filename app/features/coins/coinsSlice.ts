@@ -14,6 +14,11 @@ export interface CoinsState {
     hasMore: boolean,
     order: Order,
     loadingPageMap: Record<number, true>
+
+    selectedCoin: Coin | null,
+    selectedCoinStatus: 'idle' | 'loading' | 'succeeded' | 'failed',
+    selectedCoinError?: string,
+    selectedCoinId: string | null,
 }
 
 // headers, api key and urls
@@ -37,9 +42,32 @@ const initialState: CoinsState = {
     hasMore: true,
     loadingPageMap: {},
     order: 'market_cap_desc',
+
+    selectedCoin: null,
+    selectedCoinStatus: 'idle',
+    selectedCoinId: null,
 }
 
 // thunk
+export const fetchCoinById = createAppAsyncThunk<
+    Coin,
+    string
+>(
+    'coins/fetchCoinById',
+    async (coinid, {signal}) => {
+        try {
+            const res = await fetch(`${BASE_URL}/coins/${coinid}`, {signal})
+
+            if(!res.ok) throw new Error('res not okay, fetch coin id failed, try again')
+            const data = await res.json()
+            return data as Coin
+        }
+        catch(e: any) {
+            const msg = e instanceof Error ? e.message : String(e)
+            throw new Error(`fetch failed: ${msg}`)
+        }
+    }
+)
 export const fetchCoins = createAppAsyncThunk<
     Coin[],
     {order?: Order; page?: number; per_page?: number} | void
@@ -60,7 +88,7 @@ export const fetchCoins = createAppAsyncThunk<
         try {
             const res = await fetch(`${BASE_URL}/coins/markets?${queries}`, {signal})
 
-            if(!res.ok) throw new Error('res not ok, try again')
+            if(!res.ok) throw new Error('res not ok, fetch coings failed, try again')
 
             const data = await res.json()
             return data as Coin[]
@@ -100,6 +128,7 @@ const coinsSlice = createSlice({
         },
     },
     extraReducers: (b) => {
+        // state, action
         b.addCase(fetchCoins.pending, (s, a) => {
             s.status = 'loading'
             s.error = undefined
@@ -137,6 +166,19 @@ const coinsSlice = createSlice({
             s.status = 'failed'
             s.error = a.error.message
             delete s.loadingPageMap[page]
+        })
+        .addCase(fetchCoinById.pending, (s, a) => {
+            s.selectedCoinStatus = 'loading'
+            s.selectedCoinError = undefined
+            s.selectedCoinId = a.meta.arg
+        })
+        .addCase(fetchCoinById.fulfilled, (s, a) => {
+            s.selectedCoinStatus = 'succeeded'
+            s.selectedCoin = a.payload
+        })
+        .addCase(fetchCoinById.rejected, (s, a) => {
+            s.selectedCoinStatus = 'failed'
+            s.selectedCoinError = a.error.message
         })
     },
 })
