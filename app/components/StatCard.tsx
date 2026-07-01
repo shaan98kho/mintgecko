@@ -1,3 +1,5 @@
+import { FaSortDown, FaSortUp } from "react-icons/fa6"
+
 type StatCardProps = {
     title: string,
     value: number,
@@ -41,14 +43,14 @@ export default function StatCard({
         <p className="mt-auto text-2xl font-semibold">{formattedValue}</p>
 
         {hasChange && (
-            <div className={
+            <div className={`${
                 isZero
                   ? 'text-zinc-400'
                   : isPositive
                   ? 'text-emerald-600'
                   : 'text-rose-600'
-              }>
-                {isPositive ? "▲" : "▼"} {Math.abs(change!).toFixed(2)}%
+              } flex items-center gap-1`}>
+                {isPositive ? <FaSortUp className="relative top-1"/> : <FaSortDown className="relative bottom-1"/>} {Math.abs(change!).toFixed(2)}%
             </div>
         )}
 

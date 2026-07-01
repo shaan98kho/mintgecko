@@ -1,5 +1,6 @@
 import Sparkline from "./Sparkline";
 import { type Coin } from "~/types";
+import { FaSortDown, FaSortUp } from "react-icons/fa6"
 
 type CoinCardProps = Pick<
   Coin,
@@ -55,11 +56,11 @@ export default function CoinCard({
           ${current_price.toLocaleString()} USD
         </div>
         <div
-          className={`text-sm font-medium ${
+          className={`text-sm font-medium flex items-center gap-1 ${
             up ? "text-emerald-600" : "text-rose-600"
           }`}
         >
-          {up ? "▲" : "▼"} {Math.abs(price_change_percentage_24h).toFixed(2)}%
+          {up ? <FaSortUp className="relative top-1"/> : <FaSortDown className="relative bottom-1"/>} {Math.abs(price_change_percentage_24h).toFixed(2)}%
         </div>
       </div>
     </div>
