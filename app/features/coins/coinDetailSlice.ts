@@ -5,10 +5,19 @@ import {
 import { createAppAsyncThunk } from "~/state/typedAsyncThunk"
 import type { CoinDetail } from "~/types"
 
+type ChartRange = '1' | '7' | '30' | '365'
+// type currentId = string | null
+
 export interface CoinDetailState {
     coin: CoinDetail | null,
     status: 'idle' | 'loading' | 'succeeded' | 'failed',
     error?: string,
+    currentId: string | null,
+
+    chartPrices: number[],
+    chartStatus: 'idle' | 'loading' | 'succeeded' | 'failed',
+    chartError?: string,
+    chartRange: ChartRange,
 }
 
 // headers, api key and urls
@@ -28,6 +37,10 @@ const STALE_TIME_MS = 60_000 // 1 min
 const initialState: CoinDetailState = { 
     coin: null,
     status: 'idle',
+    chartPrices: [],
+    chartStatus: 'idle',
+    chartRange: '7',
+    currentId: null
 }
 
 // thunk
@@ -35,19 +48,42 @@ export const fetchCoinById = createAppAsyncThunk<
     CoinDetail,
     string
 >(
-    'coins/fetchCoinById',
+    'coinDetail/fetchCoinById',
     async (coinid, {signal}) => {
         try {
             const res = await fetch(`${BASE_URL}/coins/${coinid}`, {signal})
 
-            if(!res.ok) throw new Error('res not okay, fetch coin id failed, try again')
+            if(!res.ok) throw new Error('fetch coin by id res not okay, fetch coin id failed, try again')
             const data = await res.json()
             return data as CoinDetail
         }
         catch(e: any) {
             const msg = e instanceof Error ? e.message : String(e)
-            throw new Error(`fetch failed: ${msg}`)
+            throw new Error(`fetch coin by id failed: ${msg}`)
         }
+    }
+)
+
+export const fetchCoinChart = createAppAsyncThunk<
+    number[],
+    {coinid: string, days: ChartRange}
+>(
+    'coinDetail/fetchCoinChart',
+    async ({coinid, days}, {signal}) => {
+        try {
+            const res = await fetch(`${BASE_URL}/coins/${coinid}/market_chart?vs_currency=usd&days=${days}`, { signal })
+    
+            if(!res.ok) throw new Error('fetch coin chart range not ok, try again')
+            
+            const data = await res.json()
+
+            return data.prices.map((point: [number, number]) => point[1])
+        }
+        catch(e: any) {
+            const msg = e instanceof Error ? e.message : String(e)
+            throw new Error(`fetch coin chart range failed: ${msg}`)
+        }
+        
     }
 )
 
@@ -59,12 +95,16 @@ const coinDetailSlice = createSlice({
         setCoin(state, action: PayloadAction<CoinDetail>) {
             state.coin = action.payload
         },
+        setChartRange(state, action: PayloadAction<ChartRange>) {
+            state.chartRange = action.payload
+        }
     },
     extraReducers: (b) => {
         // state, action
         b.addCase(fetchCoinById.pending, (s, a) => {
             s.status = 'loading'
             s.error = undefined
+            s.currentId = a.meta.arg
         })
         .addCase(fetchCoinById.fulfilled, (s, a) => {
             s.status = 'succeeded'
@@ -73,6 +113,19 @@ const coinDetailSlice = createSlice({
         .addCase(fetchCoinById.rejected, (s, a) => {
             s.status = 'failed'
             s.error = a.error.message
+        })
+        .addCase(fetchCoinChart.pending, (s,a) => {
+            s.chartStatus = 'loading'
+            s.chartError = undefined
+            s.chartRange = a.meta.arg.days
+        })
+        .addCase(fetchCoinChart.fulfilled, (s,a) => {
+            s.chartStatus = 'succeeded'
+            s.chartPrices = a.payload
+        })
+        .addCase(fetchCoinChart.rejected, (s,a) => {
+            s.chartStatus = 'failed'
+            s.chartError = a.error.message
         })
     },
 })

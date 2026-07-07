@@ -180,8 +180,11 @@ body {
   }
 }
 
-
 .coin-detail .header > *{
   display: inline;
   padding-left: 4px;
+}
+
+.cap-rank {
+  background: rgba(52, 146, 250, 0.15);
 }
