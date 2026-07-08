@@ -5,7 +5,7 @@ import {
 import { createAppAsyncThunk } from "~/state/typedAsyncThunk"
 import type { CoinDetail } from "~/types"
 
-type ChartRange = '1' | '7' | '30' | '365'
+export type ChartRange = '1' | '7' | '30' | '365'
 // type currentId = string | null
 
 export interface CoinDetailState {
