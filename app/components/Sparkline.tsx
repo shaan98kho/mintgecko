@@ -17,6 +17,7 @@ type SparklineProps = {
     gradientTop?: string,
     /** attach extra classes to the <svg/> */
     className?: string,
+    preserveAspectRatio?: string,
     /** turn off the soft blur if want line crisp */
     softShadow?: boolean,
     /** override the auto-generated id*/
@@ -63,6 +64,7 @@ export default function Sparkline({
     showArea = true,
     gradientTop = DEFAULTS.gradientTop,
     className,
+    preserveAspectRatio,
     softShadow = DEFAULTS.softShadow,
     idOverride,
 }: SparklineProps) {
@@ -85,6 +87,7 @@ export default function Sparkline({
     <svg
         width="100%"
         viewBox={`0 0 ${width} ${height}`}
+        preserveAspectRatio={preserveAspectRatio}
         className={className}
         role="img"
         aria-label="7-day price sparkline"

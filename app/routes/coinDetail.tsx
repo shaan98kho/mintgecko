@@ -4,8 +4,23 @@ import { useParams } from "react-router-dom"
 import { fetchCoinById, fetchCoinChart, type ChartRange } from "~/features/coins/coinDetailSlice"
 import { FaSortDown, FaSortUp } from "react-icons/fa6"
 import Sparkline from "~/components/Sparkline"
+import StatCard from "~/components/StatCard";
 
 const chartRanges: ChartRange[] = ["1", "7", "30", "365"]
+type StatCardData = {
+  title: string,
+  value: number,
+  unit: "plain" | "currency",
+  currency?: string,
+}
+
+type MaybeStatCardData = Omit<StatCardData, "value"> & {
+  value: number | null | undefined;
+}
+
+const hasValue = (card: MaybeStatCardData): card is StatCardData => {
+  return card.value !== null && card.value !== undefined
+}
 
 export default function Coin() {
     const { coinid } = useParams()
@@ -13,6 +28,7 @@ export default function Coin() {
     const [days, setDays] = useState<ChartRange>("7") // default to 7
     
     const {coin, error, currentId, chartPrices} = useAppSelector(s => s.coin)
+    const marketData = coin?.market_data
 
     useEffect(() => {
         if(!coinid) return
@@ -31,10 +47,37 @@ export default function Coin() {
     }
     const change24h = coin?.market_data.price_change_percentage_24h;
     const isUp = (change24h ?? 0) >= 0;
+    const maybeStatCards: MaybeStatCardData[] = marketData
+    ? [
+        {
+            title: "Circulating Supply",
+            value: marketData.circulating_supply,
+            unit: "plain",
+        },
+        {
+            title: "Total Supply",
+            value: marketData.total_supply,
+            unit: "plain",
+        },
+        {
+            title: "Max Supply",
+            value: marketData.max_supply,
+            unit: "plain",
+        },
+        {
+            title: "24h High",
+            value: marketData.high_24h.usd,
+            unit: "currency",
+            currency: "USD",
+        },
+        ]
+    : [];
+
+    const statCards: StatCardData[] = maybeStatCards.filter(hasValue)
 
     if(error || !coinid) return <>Here by mistake? Go back</>
 
-    const chartNav = chartRanges.map(range => <button key={range} className="px-2 rounded" onClick={() => selectDays(range)}>{range} D</button>)
+    const chartNav = chartRanges.map(range => <button key={range} className={`px-2 rounded ${days === range ? 'active' : ''}`} onClick={() => selectDays(range)}>{range} D</button>)
 
     return <div className="p-8">
         <div className="flex items-center gap-2 flex-wrap">
@@ -61,11 +104,24 @@ export default function Coin() {
             <Sparkline 
                 values={chartPrices}
                 height={220}
+                className="h-[220px]"
+                preserveAspectRatio="none"
                 stroke={isUp ? "#059669" : "#dc2626"}
                 gradientTop={isUp ? "#059669" : "#dc2626"}
             />
         </div>
-        
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 pt-6">
+        {statCards.map((card) => (
+            <StatCard
+            key={card.title}
+            title={card.title}
+            value={card.value}
+            unit={card.unit}
+            currency={"currency" in card ? card.currency : undefined}
+            compact={false}
+            />
+        ))}
+        </div>
         
     </div>
 }
