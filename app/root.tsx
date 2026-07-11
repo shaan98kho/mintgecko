@@ -7,8 +7,13 @@ import {
   ScrollRestoration,
 } from "react-router";
 
+import { useState } from "react"
+import { RxHamburgerMenu } from "react-icons/rx"
+
+
 import type { Route } from "./+types/root";
 import Drawer from "~/components/Drawer";
+import Logo from "~/components/Logo"
 import "./app.css";
 
 import { Provider } from "react-redux";
@@ -46,10 +51,27 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export default function App() {
+
+  function useToggle(init = false) {
+      const [on, setOn] = useState(init)
+      const toggle = () => {
+        console.log("???")
+        setOn(prev => !prev)
+      }
+      const off = () => setOn(false)
+      return {on, toggle, off}
+  }
+
+  const mainNav = useToggle()
+  
   return <Provider store={store}>
-    <div className="flex items-start w-full">
-      <Drawer />
-      <div className="min-h-screen relative w-[calc(100%-240px)] left-[240px]">
+    <div className="flex items-start w-full ">
+      <div className="main-nav-header fixed w-full z-2">
+        <Logo classes="w-fit mx-auto"/>
+        <RxHamburgerMenu className={`size-8 absolute right-4 nav-burger cursor-pointer z-1 top-2`} onClick={mainNav.toggle}/>
+      </div>
+      <Drawer isOn={mainNav.on} toggle={mainNav.toggle}/>
+      <div className="container min-h-screen relative">
         <Outlet />
       </div>
     </div>
