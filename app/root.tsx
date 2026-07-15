@@ -70,7 +70,7 @@ export default function App() {
         <Logo classes="w-fit mx-auto"/>
         <RxHamburgerMenu className={`size-8 absolute right-4 nav-burger cursor-pointer z-1 top-2`} onClick={mainNav.toggle}/>
       </div>
-      <Drawer isOn={mainNav.on} toggle={mainNav.toggle}/>
+      <Drawer isOn={mainNav.on} toggle={mainNav.toggle} onNavigate={mainNav.off}/>
       <div className="container min-h-screen relative">
         <Outlet />
       </div>

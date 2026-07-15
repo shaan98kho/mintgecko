@@ -3,8 +3,10 @@ import { useAppDispatch, useAppSelector } from "~/state/hooks"
 import { useParams } from "react-router-dom"
 import { fetchCoinById, fetchCoinChart, type ChartRange } from "~/features/coins/coinDetailSlice"
 import { FaSortDown, FaSortUp } from "react-icons/fa6"
+import { IoCaretBackOutline } from "react-icons/io5"
 import Sparkline from "~/components/Sparkline"
-import StatCard from "~/components/StatCard";
+import StatCard from "~/components/StatCard"
+import { Link } from "react-router"
 
 const chartRanges: ChartRange[] = ["1", "7", "30", "365"]
 type StatCardData = {
@@ -15,7 +17,7 @@ type StatCardData = {
 }
 
 type MaybeStatCardData = Omit<StatCardData, "value"> & {
-  value: number | null | undefined;
+  value: number | null | undefined
 }
 
 const hasValue = (card: MaybeStatCardData): card is StatCardData => {
@@ -23,9 +25,10 @@ const hasValue = (card: MaybeStatCardData): card is StatCardData => {
 }
 
 export default function Coin() {
+    const [days, setDays] = useState<ChartRange>("7") // default to 7
+    const [showFullDesc, setShowFullDesc] = useState<boolean>(false)
     const { coinid } = useParams()
     const dispatch = useAppDispatch()
-    const [days, setDays] = useState<ChartRange>("7") // default to 7
     
     const {coin, error, currentId, chartPrices} = useAppSelector(s => s.coin)
     const marketData = coin?.market_data
@@ -45,8 +48,8 @@ export default function Coin() {
     const selectDays = (day: ChartRange) => {
         setDays(day)
     }
-    const change24h = coin?.market_data.price_change_percentage_24h;
-    const isUp = (change24h ?? 0) >= 0;
+    const change24h = coin?.market_data.price_change_percentage_24h
+    const isUp = (change24h ?? 0) >= 0
     const maybeStatCards: MaybeStatCardData[] = marketData
     ? [
         {
@@ -71,15 +74,21 @@ export default function Coin() {
             currency: "USD",
         },
         ]
-    : [];
+    : []
 
     const statCards: StatCardData[] = maybeStatCards.filter(hasValue)
 
+    const stripHtml = (html: string) => html.replace(/<[^>]+>/g, "")
+    const description = stripHtml(coin?.description.en ?? "")
+
     if(error || !coinid) return <>Here by mistake? Go back</>
 
-    const chartNav = chartRanges.map(range => <button key={range} className={`px-2 rounded ${days === range ? 'active' : ''}`} onClick={() => selectDays(range)}>{range} D</button>)
+    const chartNav = chartRanges.map(range => <button key={range} className={`px-2 rounded cursor-pointer ${days === range ? 'active' : ''}`} onClick={() => selectDays(range)}>{range} D</button>)
 
     return <div className="p-8">
+        <Link
+            to={`/market`}
+            className="mb-6 flex items-center text-sm back-btn"><IoCaretBackOutline />Back to Market</Link>
         <div className="flex items-center gap-2 flex-wrap">
             <img src={coin?.image.thumb} alt="" className="w-6 h-6" /><h1 className="font-bold text-xl">{coin?.name}</h1>
             <span className="">{coin?.symbol}</span>
@@ -110,7 +119,8 @@ export default function Coin() {
                 gradientTop={isUp ? "#059669" : "#dc2626"}
             />
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 pt-6">
+        <h2 className="text-xl font-bold pt-6">Market Stats</h2>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 pt-4">
         {statCards.map((card) => (
             <StatCard
             key={card.title}
@@ -122,6 +132,16 @@ export default function Coin() {
             />
         ))}
         </div>
+
+        {description && 
+
+            <div className="pt-4">
+                <h2 className="text-xl font-bold">Description</h2>
+                <p className={`text-sm pt-4 ${showFullDesc ? '': 'line-clamp-4' }`}>{description}</p>
+                <button type="button" className="pt-2 cursor-pointer font-semibold text-sm show-more" onClick={() => setShowFullDesc(prev => !prev)}>{showFullDesc ? "Show less" : "Show more"}</button>
+            </div>
+        }
+        
         
     </div>
 }

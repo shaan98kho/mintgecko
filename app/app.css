@@ -43,6 +43,10 @@ body {
   min-width: 189px;
 }
 
+.back-btn {
+  color: var(--color-text-secondary);
+}
+
 .container {
   position: relative;
   left: 240px;
@@ -284,4 +288,11 @@ body {
 .chart-nav > button:hover,
 .chart-nav > button.active {
   background: rgba(52, 146, 250, 0.25);
+}
+
+.show-more {
+  transition: color ease-in-out 0.2s;
+}
+.show-more:hover {
+  color: var(--secondary);
 }
