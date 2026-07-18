@@ -31,5 +31,13 @@ export default function Drawer({isOn, toggle, onNavigate}: DrawerProps) {
             <NavBtn caption={<><IoIosSettings/>Settings</>} href="/settings" onClick={onNavigate}/>
         </div>
         <button onClick={toggle} className=" absolute size-8 right-8 top-8 cursor-pointer"><IoClose className="nav-close size-full"/></button>
+        <span className="text-center text-xs">This is just an independant personal project intended for portfolio, <a
+            href="https://www.coingecko.com/en/api"
+            target="_blank"
+            rel="noreferrer"
+            className="drawer-attribution underline"
+        >
+        all data provided by CoinGecko
+        </a></span>
     </div>
 }

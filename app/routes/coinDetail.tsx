@@ -30,8 +30,11 @@ export default function Coin() {
     const { coinid } = useParams()
     const dispatch = useAppDispatch()
     
-    const {coin, error, currentId, chartPrices} = useAppSelector(s => s.coin)
+    // const {coin, error, currentId, chartPrices} = useAppSelector(s => s.coin)
+    const {coin, error, currentId, chartPricesByKey} = useAppSelector(s => s.coin)
     const marketData = coin?.market_data
+    const chartKey = coinid ? `${coinid}-${days}` : ""
+    const chartPrices = chartPricesByKey[chartKey] ?? []
 
     useEffect(() => {
         if(!coinid) return
