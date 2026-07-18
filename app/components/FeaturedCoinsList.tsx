@@ -21,17 +21,17 @@ export default function FeaturedCoinsList() {
             {coins?.slice(0, 5).map((coin, idx) => {
                 // if(idx === 1)
                 return <>
-                    <Link to={`/market/${coin.id}`}>
+                    <Link to={`/market/${coin.id}`} className={`flex-shrink-0 mb-2 ${idx === 0 ? "ml-8" : ""}`}>
                         <CoinCard 
                         key={`c${coin.id}`}
                         id={coin.id}
                         name={coin.name}
                         symbol={coin.symbol}
                         image={coin.image}
+                        
                         current_price={coin.current_price}
                         price_change_percentage_24h={coin.price_change_percentage_24h}
                         sparkline_in_7d={coin.sparkline_in_7d}
-                        classes={`flex-shrink-0 mt-4 mb-6 ${idx === 0 ? "ml-8" : ""}`}
                     />
                     </Link>
                 </>
