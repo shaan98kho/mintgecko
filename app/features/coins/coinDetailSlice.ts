@@ -14,7 +14,12 @@ export interface CoinDetailState {
     error?: string,
     currentId: string | null,
 
+    // for bug #4: start
     chartPrices: number[],
+    chartPricesByKey: Record<string, number[]>, // caching
+    chartFetchedAtByKey: Record<string, number>, // caching
+    loadingChartMap: Record<string, true>, // caching
+    // for bug #4: end
     chartStatus: 'idle' | 'loading' | 'succeeded' | 'failed',
     chartError?: string,
     chartRange: ChartRange,
@@ -31,6 +36,8 @@ const options = {
     }
 }
 const STALE_TIME_MS = 60_000 // 1 min
+const CHART_STALE_TIME_MS = 5 * 60_000 // 5 minutes
+const getChartKey = (coinid: string, days: ChartRange) => `${coinid}-${days}`
 
 
 // initial state
@@ -38,6 +45,11 @@ const initialState: CoinDetailState = {
     coin: null,
     status: 'idle',
     chartPrices: [],
+    // for bug #4: start 
+    chartPricesByKey: {}, // caching
+    chartFetchedAtByKey: {}, // caching
+    loadingChartMap: {}, // caching
+    // for bug #4: end
     chartStatus: 'idle',
     chartRange: '7',
     currentId: null
@@ -84,6 +96,19 @@ export const fetchCoinChart = createAppAsyncThunk<
             throw new Error(`fetch coin chart range failed: ${msg}`)
         }
         
+    },
+    {
+        condition: ({coinid, days}, {getState}) => {
+            const key = getChartKey(coinid, days)
+            const state = getState().coin
+
+            if(state.loadingChartMap[key]) return false
+            
+            const lastFetched = state.chartFetchedAtByKey[key]
+            if(lastFetched && Date.now() - lastFetched < CHART_STALE_TIME_MS) return false
+
+            return true
+        }
     }
 )
 
@@ -115,17 +140,33 @@ const coinDetailSlice = createSlice({
             s.error = a.error.message
         })
         .addCase(fetchCoinChart.pending, (s,a) => {
+            const { coinid, days } = a.meta.arg
+            const key = getChartKey(coinid, days)
+
             s.chartStatus = 'loading'
             s.chartError = undefined
-            s.chartRange = a.meta.arg.days
+            s.chartRange = days
+            s.loadingChartMap[key] = true
         })
         .addCase(fetchCoinChart.fulfilled, (s,a) => {
+            const { coinid, days } = a.meta.arg
+            const key = getChartKey(coinid, days)
+
             s.chartStatus = 'succeeded'
             s.chartPrices = a.payload
+            s.chartPricesByKey[key] = a.payload
+            s.chartFetchedAtByKey[key] = Date.now()
+
+            delete s.loadingChartMap[key]
         })
         .addCase(fetchCoinChart.rejected, (s,a) => {
+            const { coinid, days } = a.meta.arg
+            const key = getChartKey(coinid, days)
+
             s.chartStatus = 'failed'
             s.chartError = a.error.message
+
+            delete s.loadingChartMap[key]
         })
     },
 })
