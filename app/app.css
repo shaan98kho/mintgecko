@@ -283,12 +283,14 @@ body {
 }
 
 .chart-nav > button {
-  transition: background ease-in-out 0.2s;
+  transition: all ease-in-out 0.2s;
 }
 
 .chart-nav > button:hover,
 .chart-nav > button.active {
   background: rgba(52, 146, 250, 0.25);
+  color: var(--primary);
+  font-weight: 500;
 }
 
 .show-more {
