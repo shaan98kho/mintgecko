@@ -40,7 +40,7 @@ export default function StatCard({
 
     return <div className={`stats-card rounded-2xl p-5 flex flex-col gap-2 w-full ${classes ?? ""}`}>
         <h3 className="text-xl w-full font-bold">{title}</h3>
-        <p className="mt-auto text-2xl font-semibold">{formattedValue}</p>
+        <p className="mt-auto text-2xl font-semibold break-all">{formattedValue}</p>
 
         {hasChange && (
             <div className={`${

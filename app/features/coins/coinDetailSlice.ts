@@ -13,6 +13,9 @@ export interface CoinDetailState {
     status: 'idle' | 'loading' | 'succeeded' | 'failed',
     error?: string,
     currentId: string | null,
+    coinById: Record<string, CoinDetail>,
+    coinFetchedAtById: Record<string, number>,
+    loadingCoinMap: Record<string, true>,
 
     // for bug #4: start
     chartPrices: number[],
@@ -35,8 +38,9 @@ const options = {
         'x-cg-demo-api-key': API_KEY
     }
 }
-const STALE_TIME_MS = 60_000 // 1 min
-const CHART_STALE_TIME_MS = 5 * 60_000 // 5 minutes
+
+// const COIN_STALE_TIME_MS = 60_000 // 1 min
+const STALE_TIME_MS = 5 * 60_000 // 5 minutes
 const getChartKey = (coinid: string, days: ChartRange) => `${coinid}-${days}`
 
 
@@ -45,6 +49,9 @@ const initialState: CoinDetailState = {
     coin: null,
     status: 'idle',
     chartPrices: [],
+    coinById: {},
+    coinFetchedAtById: {},
+    loadingCoinMap: {},
     // for bug #4: start 
     chartPricesByKey: {}, // caching
     chartFetchedAtByKey: {}, // caching
@@ -62,8 +69,12 @@ export const fetchCoinById = createAppAsyncThunk<
 >(
     'coinDetail/fetchCoinById',
     async (coinid, {signal}) => {
+        const queries = new URLSearchParams({
+            x_cg_demo_api_key: API_KEY,
+        })
+
         try {
-            const res = await fetch(`${BASE_URL}/coins/${coinid}`, {signal})
+            const res = await fetch(`${BASE_URL}/coins/${coinid}?${queries}`, {signal})
 
             if(!res.ok) throw new Error('fetch coin by id res not okay, fetch coin id failed, try again')
             const data = await res.json()
@@ -73,6 +84,19 @@ export const fetchCoinById = createAppAsyncThunk<
             const msg = e instanceof Error ? e.message : String(e)
             throw new Error(`fetch coin by id failed: ${msg}`)
         }
+    },
+    {
+        condition:(coinid, {getState}) => {
+
+            const state = getState().coin
+
+            if(state.loadingCoinMap[coinid]) return false
+            const lastFetched = state.coinFetchedAtById[coinid]
+
+            if(lastFetched && Date.now() - lastFetched < STALE_TIME_MS) return false
+
+            return true
+        },
     }
 )
 
@@ -82,8 +106,14 @@ export const fetchCoinChart = createAppAsyncThunk<
 >(
     'coinDetail/fetchCoinChart',
     async ({coinid, days}, {signal}) => {
+        const queries = new URLSearchParams({
+            vs_currency: "usd",
+            days,
+            x_cg_demo_api_key: API_KEY,
+        })
+
         try {
-            const res = await fetch(`${BASE_URL}/coins/${coinid}/market_chart?vs_currency=usd&days=${days}`, { signal })
+            const res = await fetch(`${BASE_URL}/coins/${coinid}/market_chart?${queries}`, { signal })
     
             if(!res.ok) throw new Error('fetch coin chart range not ok, try again')
             
@@ -105,7 +135,7 @@ export const fetchCoinChart = createAppAsyncThunk<
             if(state.loadingChartMap[key]) return false
             
             const lastFetched = state.chartFetchedAtByKey[key]
-            if(lastFetched && Date.now() - lastFetched < CHART_STALE_TIME_MS) return false
+            if(lastFetched && Date.now() - lastFetched < STALE_TIME_MS) return false
 
             return true
         }
@@ -127,17 +157,30 @@ const coinDetailSlice = createSlice({
     extraReducers: (b) => {
         // state, action
         b.addCase(fetchCoinById.pending, (s, a) => {
+            const coinid = a.meta.arg
+
             s.status = 'loading'
             s.error = undefined
-            s.currentId = a.meta.arg
+            s.currentId = coinid
+            s.loadingCoinMap[coinid] = true
         })
         .addCase(fetchCoinById.fulfilled, (s, a) => {
+            const coinid = a.meta.arg
+
             s.status = 'succeeded'
             s.coin = a.payload
+            s.coinById[coinid] = a.payload
+            s.coinFetchedAtById[coinid] = Date.now()
+
+            delete s.loadingCoinMap[coinid]
         })
         .addCase(fetchCoinById.rejected, (s, a) => {
+            const coinid = a.meta.arg
+
             s.status = 'failed'
             s.error = a.error.message
+
+            delete s.loadingCoinMap[coinid]
         })
         .addCase(fetchCoinChart.pending, (s,a) => {
             const { coinid, days } = a.meta.arg

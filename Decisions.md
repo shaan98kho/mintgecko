@@ -6,3 +6,7 @@
 >> change sort button into two separate buttons, one for asc and one for desc
 >> changed handleSort params, added activeDir to track current direction
 >> fixed handleSort logic, when current key and dir is same as the newly passed in one, return null sortkey and default direction
+
+2. found issues in coin detail page when switching between data range (1d/7d/30d/365d)
+- hits error 429 when repeatedly switch between coin data range
+>> handled by caching the data fetched instead of having to refetch everytime user change the range

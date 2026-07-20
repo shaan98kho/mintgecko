@@ -31,8 +31,9 @@ export default function Coin() {
     const dispatch = useAppDispatch()
     
     // const {coin, error, currentId, chartPrices} = useAppSelector(s => s.coin)
-    const {coin, error, currentId, chartPricesByKey} = useAppSelector(s => s.coin)
-    const marketData = coin?.market_data
+    const {coinById, error, currentId, chartPricesByKey} = useAppSelector(s => s.coin)
+    const selectedcoin = coinid ? coinById[coinid] : null
+    const marketData = selectedcoin?.market_data
     const chartKey = coinid ? `${coinid}-${days}` : ""
     const chartPrices = chartPricesByKey[chartKey] ?? []
 
@@ -51,7 +52,7 @@ export default function Coin() {
     const selectDays = (day: ChartRange) => {
         setDays(day)
     }
-    const change24h = coin?.market_data.price_change_percentage_24h
+    const change24h = selectedcoin?.market_data.price_change_percentage_24h
     const isUp = (change24h ?? 0) >= 0
     const maybeStatCards: MaybeStatCardData[] = marketData
     ? [
@@ -82,7 +83,7 @@ export default function Coin() {
     const statCards: StatCardData[] = maybeStatCards.filter(hasValue)
 
     const stripHtml = (html: string) => html.replace(/<[^>]+>/g, "")
-    const description = stripHtml(coin?.description.en ?? "")
+    const description = stripHtml(selectedcoin?.description.en ?? "")
 
     if(error || !coinid) return <>Here by mistake? Go back</>
 
@@ -93,12 +94,12 @@ export default function Coin() {
             to={`/market`}
             className="mb-6 flex items-center text-sm back-btn"><IoCaretBackOutline />Back to Market</Link>
         <div className="flex items-center gap-2 flex-wrap">
-            <img src={coin?.image.thumb} alt="" className="w-6 h-6" /><h1 className="font-bold text-xl">{coin?.name}</h1>
-            <span className="">{coin?.symbol}</span>
-            <div className="cap-rank px-2 py-[1px] rounded text-xs">#{coin?.market_cap_rank}</div>
+            <img src={selectedcoin?.image.thumb} alt="" className="w-6 h-6" /><h1 className="font-bold text-xl">{selectedcoin?.name}</h1>
+            <span className="">{selectedcoin?.symbol}</span>
+            <div className="cap-rank px-2 py-[1px] rounded text-xs">#{selectedcoin?.market_cap_rank}</div>
         </div>
         <div className="flex items-center pt-4 gap-3">
-            <h2 className="text-2xl font-bold">{coin?.market_data.current_price.usd.toLocaleString("en-US", {
+            <h2 className="text-2xl font-bold">{selectedcoin?.market_data.current_price.usd.toLocaleString("en-US", {
                 style: "currency",
                 currency: "USD",
             })}</h2>
