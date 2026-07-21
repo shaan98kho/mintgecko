@@ -35,6 +35,14 @@ body {
   color: var(--color-text-primary);
 }
 
+a {
+  transition: color ease-in-out 0.2s;;
+}
+
+a:hover {
+  color: var(--secondary);
+}
+
 .logo {
   font-family: "VT323";
   color: var(--primary);

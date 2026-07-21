@@ -145,6 +145,25 @@ export default function Coin() {
                 <button type="button" className="pt-2 cursor-pointer font-semibold text-sm show-more" onClick={() => setShowFullDesc(prev => !prev)}>{showFullDesc ? "Show less" : "Show more"}</button>
             </div>
         }
+        <div className="pt-4">
+            <h2 className="text-xl font-bold">Links</h2>
+            <div className="flex flex-wrap gap-2 pt-4 text-sm">
+                <a href={selectedcoin?.links.homepage[0]} target="_blank" rel="noreferrer">
+                    Website
+                </a>
+
+                <a href={selectedcoin?.links.repos_url.github[0]} target="_blank" rel="noreferrer">
+                    GitHub
+                </a>
+
+                <a href={selectedcoin?.links.twitter_screen_name} target="_blank" rel="noreferrer">
+                    Twitter
+                </a>
+                <a href={selectedcoin?.links.subreddit_url} target="_blank" rel="noreferrer">
+                    Reddit
+                </a>
+            </div>
+        </div>
         
         
     </div>
