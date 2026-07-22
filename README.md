@@ -10,8 +10,8 @@ Mintgecko lets you explore real-time market data, track coins, view detailed cha
 
 ## 🚀 Features to build
 
-- 🔎 **Market Overview** – Browse top cryptocurrencies with live prices, market cap, and volume.  
-- 📊 **Coin Detail Pages** – Price, supply, and interactive historical charts (7/30/90 days).  
+- 🔎 **Market Overview** – Browse top cryptocurrencies with live prices, market cap, and volume.  (done)
+**- 📊 **Coin Detail Pages** – Price, supply, and interactive historical charts (7/30/90 days).  (in progress)**
 - ⭐ **Watchlist** – Add/remove favorite coins, persisted to localStorage.  
 - 💱 **Currency Toggle** – Switch between USD and MYR (expandable to other currencies).  
 - 🧭 **Sorting & Pagination** – Order by market cap, 24h %, or volume, with paginated results.  
