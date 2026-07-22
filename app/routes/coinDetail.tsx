@@ -156,9 +156,9 @@ export default function Coin() {
                     GitHub
                 </a>
 
-                <a href={selectedcoin?.links.twitter_screen_name} target="_blank" rel="noreferrer">
+                {selectedcoin?.links.twitter_screen_name && <a href={`https://twitter.com/${selectedcoin?.links.twitter_screen_name}`} target="_blank" rel="noreferrer">
                     Twitter
-                </a>
+                </a>}
                 <a href={selectedcoin?.links.subreddit_url} target="_blank" rel="noreferrer">
                     Reddit
                 </a>

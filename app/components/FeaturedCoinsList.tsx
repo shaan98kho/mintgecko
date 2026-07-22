@@ -13,7 +13,7 @@ export default function FeaturedCoinsList() {
 		dispatch(fetchCoins())
 	}, [dispatch])
 
-    if(status == 'loading') return <div>Fetching coins...</div>
+    if(status == 'loading') return <div className="px-8">Fetching coins...</div>
 	if(!coins || status==='failed') return <>Error fetching, please try again</>
 
 
